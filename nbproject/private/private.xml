@@ -4,10 +4,10 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/D:/NetbeansProject/Hospital/src/hospital/Home.java</file>
-            <file>file:/D:/NetbeansProject/Hospital/src/hospital/SearchPatient.java</file>
             <file>file:/D:/NetbeansProject/Hospital/src/hospital/Patientrecords.java</file>
             <file>file:/D:/NetbeansProject/Hospital/src/hospital/Viewusers.java</file>
             <file>file:/D:/NetbeansProject/Hospital/src/hospital/Login.java</file>
+            <file>file:/D:/NetbeansProject/Hospital/src/hospital/DoctorAssignment.java</file>
             <file>file:/D:/NetbeansProject/Hospital/src/hospital/NewPatient.java</file>
         </group>
     </open-files>

@@ -5,7 +5,6 @@
  */
 package hospital;
 
-import com.toedter.components.JTitlePanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -25,26 +24,20 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.crypto.ExemptionMechanismException;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
+import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.JToolBar;
-import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
 import org.pushingpixels.flamingo.api.common.JCommandButton;
-import org.pushingpixels.flamingo.api.common.JCommandMenuButton;
 import org.pushingpixels.flamingo.api.common.RichTooltip;
 import org.pushingpixels.flamingo.api.common.icon.ImageWrapperResizableIcon;
 import org.pushingpixels.flamingo.api.ribbon.JRibbonFrame;
 import org.pushingpixels.flamingo.api.common.icon.ResizableIcon;
-import org.pushingpixels.flamingo.api.common.popup.JPopupPanel;
 import org.pushingpixels.flamingo.api.ribbon.JRibbonBand;
 import org.pushingpixels.flamingo.api.ribbon.RibbonApplicationMenu;
 import org.pushingpixels.flamingo.api.ribbon.RibbonApplicationMenuEntryFooter;
@@ -65,26 +58,27 @@ import test.svg.transcoded.printer;
  */
 public class Home extends JRibbonFrame {
 Connection con=null;
-    ResultSet rs=null;
-    PreparedStatement pst=null;
-  public RibbonTask task1;
-    //   setting buttons with images
+ResultSet rs=null;
+PreparedStatement pst=null;
+JDesktopPane desktop;
+ImageIcon img = new ImageIcon("images/user.png");
+JPanel centerpanel, leftpanel, rightpanel;
+JLabel time, date,logdetail;
+public ResizableIcon appIcon;
+public String me;
+JCommandButton button1, button2;
+    //   setting ribbon buttons with images
     public static ResizableIcon getResizableIconFromResource(String resource) {
-
         return ImageWrapperResizableIcon.getIcon(Home.class.getClassLoader().getResource(resource), new Dimension(48, 48));
     }
       //icon image
-    ImageIcon img = new ImageIcon("images/user.png");
-    JPanel centerpanel, leftpanel, rightpanel;
-    JLabel time, date,logdetail;
-    JScrollPane cpane;
-    public ResizableIcon appIcon;
-    public String me;
-    private int memba =0;
+   
+    
     
     public Home(String loggedin_user) {
         super();
         con=javaconnect.ConnectDb();
+        //Screen size
         int inset = 30;
         Dimension dime = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, 20,
@@ -153,11 +147,8 @@ Connection con=null;
         compo();
         datenandtime();
         me=loggedin_user;
-       // JOptionPane.showMessageDialog(null, me);  
-        
        loggedin();  
     }
-
   
 
     public void compo() {
@@ -307,21 +298,21 @@ Connection con=null;
 
         JRibbonBand band1 = new JRibbonBand("Reception ", null);
 
-        JCommandButton button1 = new JCommandButton(" New Patient Admission", getResizableIconFromResource("images/addicon.png"));
+        button1 = new JCommandButton(" New Patient Admission", getResizableIconFromResource("images/addicon.png"));
         RichTooltip newpatient = new RichTooltip();
         newpatient.setTitle("New Patient Admission");
         newpatient.addDescriptionSection("Click on this button  to add a new patient....");
         newpatient.addFooterSection("Press F1 for help");
         button1.setActionRichTooltip(newpatient);
         button1.addActionListener(new ActionListener() {
-
+        
             @Override
             public void actionPerformed(ActionEvent ae) {
                 newpatient();
             }
         });
 
-        JCommandButton button2 = new JCommandButton("Patient Records", getResizableIconFromResource("images/patientrecords.png"));
+        button2 = new JCommandButton("Patient Records", getResizableIconFromResource("images/patientrecords.png"));
         RichTooltip patientrecord = new RichTooltip();
         patientrecord.setTitle("Patient Records");
         patientrecord.addDescriptionSection("Click on this button to view the patient records....");
@@ -371,7 +362,7 @@ Connection con=null;
         band1.addCommandButton(button4, MEDIUM);
         band1.setResizePolicies((List) Arrays.asList(new CoreRibbonResizePolicies.None(band1.getControlPanel()),
                 new IconRibbonBandResizePolicy(band1.getControlPanel())));
-       /* RibbonTask */task1 = new RibbonTask("Reception", band1);
+        RibbonTask task1 = new RibbonTask("Reception", band1);
         /**
          * ........................................*
          */
@@ -647,65 +638,48 @@ Connection con=null;
        
         /////container
         BorderLayout container = new BorderLayout();
-        JPanel pane = new JPanel(container);
-        getContentPane().add(pane);
-
+        desktop = new JDesktopPane();
+        desktop.setLayout(container);
+        getContentPane().add(desktop);
+//Top panel component
         JPanel toppanel = new JPanel();
-        JButton button = new JButton("Button 1 (PAGE_START)");
-
-        pane.add(toppanel, BorderLayout.PAGE_START);
+        desktop.add(toppanel, BorderLayout.PAGE_START);
 
 //Make the center component big, since that's the
 //typical usage of BorderLayout.
         centerpanel = new JPanel();
-        button = new JButton("Button 2 (CENTER)");
-        button.setPreferredSize(new Dimension(200, 100));
-
-        pane.add(centerpanel, BorderLayout.CENTER); 
-       
+        desktop.add(centerpanel, BorderLayout.CENTER); 
+       //left panel component
         leftpanel = new JPanel();
-         JPanel panel = new JPanel();
-    panel.setBorder(BorderFactory.createTitledBorder("Main"));
-    panel.add(new JLabel("Field 1"));
-    panel.add(new JTextField(10));
-    panel.setBackground(Color.LIGHT_GRAY);
-  panel.add(new JButton("Field 2"));
-  JTextField nn=new JTextField();
-  nn.setBounds(0, 30, 10, 10);
-  panel.add(nn);
-  
-    panel.setBounds(0,0,100,600);
-
-        panel.setVisible(true);
-        leftpanel.add(panel);
-        
-        pane.add(leftpanel, BorderLayout.LINE_START);
+        leftpanel.setBorder(BorderFactory.createTitledBorder("Hospital Information"));
+         leftpanel.add(new JLabel("Field 1"));
+        leftpanel.add(new JTextField(10));
+        leftpanel.setBackground(Color.LIGHT_GRAY);
+        desktop.add(leftpanel, BorderLayout.LINE_START);
        
-        
+        // footer component
         
         JPanel foot = new JPanel();
         foot.setBackground(Color.LIGHT_GRAY);
-         logdetail=new JLabel();
-        
-         time = new JLabel();
-        
+        logdetail=new JLabel();
+        time = new JLabel();
         date = new JLabel();
-       
         JLabel space = new JLabel("                                                                                                                                                              ");
         foot.add(logdetail);
         foot.add(time);
         foot.add(space);
         foot.add(date);
-        pane.add(foot, BorderLayout.PAGE_END);
-        
+        desktop.add(foot, BorderLayout.PAGE_END);
+                
+        //Right component
         rightpanel = new JPanel();
-        //button = new JButton("5 (LINE_END)");
-        pane.add(rightpanel, BorderLayout.LINE_END);
+        desktop.add(rightpanel, BorderLayout.LINE_END);
     }
 
+    //Methods
     
+    //Login method
   public void loggedin() {
-        
     String sql="select * from user where USER_ID='"+me+"'";
     try {
         pst=con.prepareStatement(sql);
@@ -903,7 +877,6 @@ public void Saidia(){
                     int month = cal.get(Calendar.MONTH);
                     int year = cal.get(Calendar.YEAR);
                     int day = cal.get(Calendar.DAY_OF_MONTH);
-
                     date.setText(day + "/" + (month + 1) + "/" + year);
 
                     int second = cal.get(Calendar.SECOND);

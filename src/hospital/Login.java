@@ -76,8 +76,9 @@ public void loggin(){
      stm.executeUpdate(sqql);
             if(jComboBoxusertype.getSelectedIndex()==0){
         hoomie = new Home(loggedin_user);
-        //hoomie.task1.hashCode();
-     }
+     //   hoomie.button1.setEnabled(false);
+       // hoomie.button2.setEnabled(false);
+            }
      else{
          hoomie=new Home(loggedin_user);
        
