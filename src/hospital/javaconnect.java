@@ -8,6 +8,7 @@ package hospital;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 /**
@@ -20,8 +21,8 @@ public class javaconnect {
            Class.forName("com.mysql.jdbc.Driver");
            Connection con=DriverManager.getConnection("jdbc:mysql://localhost/MertmergHospital","root","");
            return con; 
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null, e);
+        }catch(ClassNotFoundException | SQLException e){
+            JOptionPane.showMessageDialog(null, "Database Connection Error!!! Check your database connection","Connection..",JOptionPane.ERROR_MESSAGE,null);
             return null;
         }
     }

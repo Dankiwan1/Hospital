@@ -6,12 +6,19 @@
 
 package hospital;
 
+import java.net.URL;
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
+import javax.xml.ws.Action;
+
 /**
  *
  * @author Dankiwan
  */
 public class Help extends javax.swing.JDialog {
-
+ private HelpSet hs;
+    private HelpBroker hb;
+    private URL hsURL;
     /**
      * Creates new form Help
      */
@@ -125,9 +132,29 @@ dispose();        // TODO add your handling code here:
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+openHelp();
+dispose();
+// TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
-
+  @Action public void openHelp() {
+    // Identify the location of the .hs file 
+    String pathToHS = "/appwithhelp/docs/appwithhelp-hs.xml";
+    //Create a URL for the location of the help set
+    try {
+      URL hsURL = getClass().getResource(pathToHS);
+        hs = new HelpSet(null, hsURL);
+    } catch (Exception ee) {
+        // Print info to the console if there is an exception
+        System.out.println( "HelpSet " + ee.getMessage());
+        System.out.println("Help Set "+ pathToHS +" not found");
+        return;
+    }
+  
+    // Create a HelpBroker object for manipulating the help set
+    hb = hs.createHelpBroker();
+    //Display help set
+    hb.setDisplayed(true);
+}
     /**
      * @param args the command line arguments
      */

@@ -6,6 +6,7 @@
 
 package hospital;
 
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,7 +22,8 @@ public class DoctorAssignment extends javax.swing.JInternalFrame {
 Connection con=null;
        ResultSet rs=null;
     PreparedStatement pst=null;
-     String pid,fname,lname;
+     String pid,fname,lname,titlee;
+     private static DoctorAssignment DoctorAssignInstance;
     /**
      * Creates new form DoctorAssignment
      */
@@ -30,7 +32,11 @@ Connection con=null;
         con=javaconnect.ConnectDb();
        Tablefill();
     }
-
+public DoctorAssignment DoctorAssignmentInstance(){
+    if(DoctorAssignInstance==null){
+    DoctorAssignInstance=new DoctorAssignment();}
+    return DoctorAssignInstance;
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -76,6 +82,9 @@ Connection con=null;
         txt_search.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txt_searchKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_searchKeyTyped(evt);
             }
         });
 
@@ -297,6 +306,14 @@ Search();        // TODO add your handling code here:
     private void txt_searchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyReleased
 Search();        // TODO add your handling code here:
     }//GEN-LAST:event_txt_searchKeyReleased
+
+    private void txt_searchKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyTyped
+char c= evt.getKeyChar();
+if(!(Character.isDigit(c)||c==KeyEvent.VK_BACK_SPACE||c==KeyEvent.VK_DELETE)){
+    getToolkit().beep();
+    evt.consume();
+}        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_searchKeyTyped
 // method to query doctors detail from the table and fill the table....
 public void Tablefill(){
     try{
@@ -320,14 +337,18 @@ public void Search(){
     if(rs.next()){
         pid=rs.getString("PATIENT_ID");
        txt_PID.setText(pid);
-         title=rs.getString("TITLE");
-       txt_title.setText(title);
+         titlee=rs.getString("TITLE");
+       txt_title.setText(titlee);
            fname=rs.getString("FIRST_NAME");
         txt_firstname2.setText(fname);
          lname=rs.getString("LAST_NAME");
         txt_lastname2.setText(lname);
     
                    }
+    else{
+        JOptionPane.showMessageDialog(null, "The Patient ID does not exist", "Alert", JOptionPane.WARNING_MESSAGE, null);
+        txt_search.setText(null);
+    }
   }
 catch(Exception e){
 }

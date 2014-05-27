@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Patient_Summary_subreport2" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="44ea30ee-5b19-4af8-8e80-ff1732cd437d">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="pid" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     patient_medicine.`MEDICINE_NAME` AS patient_medicine_MEDICINE_NAME,
+     patient_medicine.`DRUG_QUANTITY` AS patient_medicine_DRUG_QUANTITY,
+     patient_medicine.`ITEMS` AS patient_medicine_ITEMS,
+     patient_medicine.`DOSAGE` AS patient_medicine_DOSAGE,
+     patient_medicine.`ADMINISTRATION` AS patient_medicine_ADMINISTRATION,
+     patient_medicine.`FREQUENCY` AS patient_medicine_FREQUENCY,
+     patient_medicine.`MEDICINE_DESCRIPTION` AS patient_medicine_MEDICINE_DESCRIPTION
+FROM
+     `patient_medicine` patient_medicine where
+patient_id=$P{pid}]]>
+	</queryString>
+	<field name="patient_medicine_MEDICINE_NAME" class="java.lang.String"/>
+	<field name="patient_medicine_DRUG_QUANTITY" class="java.lang.String"/>
+	<field name="patient_medicine_ITEMS" class="java.lang.Integer"/>
+	<field name="patient_medicine_DOSAGE" class="java.lang.String"/>
+	<field name="patient_medicine_ADMINISTRATION" class="java.lang.String"/>
+	<field name="patient_medicine_FREQUENCY" class="java.lang.String"/>
+	<field name="patient_medicine_MEDICINE_DESCRIPTION" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="31" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="31" backcolor="#ECF5F5" uuid="03ab4ace-bef2-402f-9870-e6ef5f52b8a5"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="202" y="11" width="36" height="20" uuid="a1e66f34-7fc8-44b9-b719-cb49127fd6a6"/>
+				<text><![CDATA[Dosage]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="429" y="11" width="114" height="20" uuid="87220c31-b3d1-4df9-b835-bda8ac84d344"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Description]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="135" y="11" width="36" height="20" uuid="323cef4f-aaed-4ecf-8536-9b85fe5b790f"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Item]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="11" width="122" height="20" uuid="06cf6bbb-861f-4bfb-be11-7a7062c576ba"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="263" y="11" width="75" height="20" uuid="fc841569-3387-4331-993d-324482845b7c"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Administration]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="352" y="11" width="56" height="20" uuid="f0143163-9113-4b95-aff8-96bea188296a"/>
+				<text><![CDATA[Frequency]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="41" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="41" backcolor="#E3EDF1" uuid="2ca16f34-12a9-40bd-9145-d007d220a9de"/>
+			</rectangle>
+			<textField>
+				<reportElement x="352" y="14" width="56" height="20" uuid="edd21131-c62a-4637-b502-f827818f784c"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{patient_medicine_FREQUENCY}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="263" y="14" width="75" height="20" uuid="811a07c6-dd9c-464b-849e-86d65dab2646"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{patient_medicine_ADMINISTRATION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="202" y="14" width="36" height="20" uuid="0ee424fb-35f7-45fc-a447-793db6540592"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{patient_medicine_DOSAGE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="429" y="14" width="114" height="20" uuid="ac7f8d7c-3c9e-4dca-917f-5992f4c2609f"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{patient_medicine_MEDICINE_DESCRIPTION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="352" y="14" width="56" height="20" uuid="edd21131-c62a-4637-b502-f827818f784c"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{patient_medicine_FREQUENCY}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="14" width="122" height="20" uuid="52b3b125-bdb1-462f-9d9f-20f685b4b159"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{patient_medicine_MEDICINE_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="135" y="14" width="36" height="20" uuid="87d4dced-c8f9-4fa3-8f2a-4cb3596051b2"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{patient_medicine_ITEMS}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="17" splitType="Stretch"/>
+	</summary>
+</jasperReport>

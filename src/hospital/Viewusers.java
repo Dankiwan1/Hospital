@@ -25,6 +25,7 @@ public class Viewusers extends javax.swing.JInternalFrame {
  Connection con=null;
     ResultSet rs=null;
     PreparedStatement pst=null;
+    private static Viewusers viewuserinstance;
     /**
      * Creates new form Viewusers
      */
@@ -33,7 +34,14 @@ public class Viewusers extends javax.swing.JInternalFrame {
         con=javaconnect.ConnectDb();
         combofill();
         ViewUser_table();
+    
     }
+    public Viewusers ViewUsersInstance(){
+        if(viewuserinstance==null){
+        viewuserinstance=new Viewusers();}
+           return viewuserinstance;
+    }
+    
 public void combofill(){
     try{
        String sql1= "select distinct category from user"; 

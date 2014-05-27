@@ -6,10 +6,12 @@
 
 package hospital;
 
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import net.proteanit.sql.DbUtils;
 
 /**
@@ -17,17 +19,23 @@ import net.proteanit.sql.DbUtils;
  * @author Dankiwan
  */
 public class Psearchname extends javax.swing.JDialog {
-   Connection con;
-     ResultSet rs=null;
-    PreparedStatement pst=null;
-   public String piid="5";
+
+    Connection con;
+    ResultSet rs = null;
+    PreparedStatement pst = null;
+    SearchPatient sp;
+    JTextField search;
+
     /**
      * Creates new form Psearchname
      */
-    public Psearchname(java.awt.Frame parent, boolean modal) {
+    public Psearchname(java.awt.Frame parent, boolean modal, SearchPatient f) {
         super(parent, modal);
-        con=javaconnect.ConnectDb();
+        con = javaconnect.ConnectDb();
+        this.sp = f;
         initComponents();
+        btn_ok.setEnabled(false);
+        
     }
 
     /**
@@ -44,7 +52,7 @@ public class Psearchname extends javax.swing.JDialog {
         cmd_searchpatient = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         table_searchname = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        btn_ok = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("SEARCH PATIENT BY NAME");
@@ -60,6 +68,9 @@ public class Psearchname extends javax.swing.JDialog {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtp_searchKeyReleased(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtp_searchKeyTyped(evt);
+            }
         });
 
         cmd_searchpatient.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/search-icon.png"))); // NOI18N
@@ -72,15 +83,25 @@ public class Psearchname extends javax.swing.JDialog {
 
         table_searchname.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Patient ID", "Title", "First Name", "Last Name", "Mobile No."
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        table_searchname.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                table_searchnameMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(table_searchname);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -109,10 +130,10 @@ public class Psearchname extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jButton1.setText("OK");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btn_ok.setText("OK");
+        btn_ok.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btn_okActionPerformed(evt);
             }
         });
 
@@ -125,8 +146,8 @@ public class Psearchname extends javax.swing.JDialog {
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(407, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btn_ok)
                 .addGap(50, 50, 50))
         );
         layout.setVerticalGroup(
@@ -135,29 +156,45 @@ public class Psearchname extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
+                .addComponent(btn_ok)
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-public void SearchName(){
-    try{
-    String sql1="SELECT PATIENT_ID,FIRST_NAME,LAST_NAME, MOBILE_NO FROM patient WHERE FIRST_NAME= ? or LAST_NAME= ?";
-    pst=con.prepareStatement(sql1);
-    pst.setString(1, txtp_search.getText());
-     pst.setString(2, txtp_search.getText());
-     rs=pst.executeQuery();
-     //if(rs.next()){
-    // piid=rs.getString("PATIENT_ID");
-     table_searchname.setModel(DbUtils.resultSetToTableModel(rs));             }
-   // }
-catch(Exception e){
-}
-}
+ public void clear() {
+        sp.txt_PID.setText(null);
+        sp.txt_firstname2.setText(null);
+        sp.txt_lastname2.setText(null);
+        sp.txt_search.setText(null);
+        sp.txt_title.setText(null);
+        sp.Jcpatientcategory.setSelectedIndex(0);
+        sp.jCheckBox_fyes.setSelected(false);
+        sp.jCheckBox_fno.setSelected(false);
+    }
+
+    public void SearchName() {
+        try {
+            String sql1 = "SELECT PATIENT_ID as 'Patient ID', TITLE as 'Title', FIRST_NAME as 'First Name',LAST_NAME as 'Last Name', MOBILE_NO as 'Mobile No.' FROM patient WHERE FIRST_NAME= ? or LAST_NAME= ?";
+            pst = con.prepareStatement(sql1);
+            pst.setString(1, txtp_search.getText());
+            pst.setString(2, txtp_search.getText());
+            rs = pst.executeQuery();
+   //  if(rs.next()){
+            // piid=rs.getString("PATIENT_ID");
+            table_searchname.setModel(DbUtils.resultSetToTableModel(rs));
+    // }
+
+//    else{
+//     JOptionPane.showMessageDialog(null, "The Patient Name does not exist", "Alert", JOptionPane.WARNING_MESSAGE, null);
+//        clear();
+//}
+        } catch (Exception e) {
+        }
+    }
     private void txtp_searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtp_searchActionPerformed
-SearchName();        // TODO add your handling code here:
+        SearchName();        // TODO add your handling code here:
     }//GEN-LAST:event_txtp_searchActionPerformed
 
     private void cmd_searchpatientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmd_searchpatientActionPerformed
@@ -165,64 +202,94 @@ SearchName();        // TODO add your handling code here:
     }//GEN-LAST:event_cmd_searchpatientActionPerformed
 
     private void txtp_searchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtp_searchKeyReleased
-SearchName();        // TODO add your handling code here:
+      // TODO add your handling code here:
     }//GEN-LAST:event_txtp_searchKeyReleased
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    
-        SearchPatient pp = new SearchPatient();
-        pp.lb_check.setText("gh");
-        JOptionPane.showMessageDialog(null, pp.lb_check);
-      pp.setVisible(true);
-      dispose();
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btn_okActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_okActionPerformed
+        if (table_searchname.getRowCount() == 0) {
+            
+            JOptionPane.showMessageDialog(null, "The Patient Name does not exist", "Alert", JOptionPane.WARNING_MESSAGE, null);
+            sp.J_search.setSelectedIndex(0);
+            clear();
+            dispose();
+        } else {
+            int r = table_searchname.getSelectedRow();
+            String pid = table_searchname.getValueAt(r, 0).toString();
+            String title = table_searchname.getValueAt(r, 1).toString();
+            String fnmae = table_searchname.getValueAt(r, 2).toString();
+            String lnmae = table_searchname.getValueAt(r, 3).toString();
+            sp.txt_search.setText(pid);
+            sp.J_search.setSelectedIndex(0);
+            sp.txt_PID.setText(pid);
+            sp.txt_title.setText(title);
+            sp.txt_firstname2.setText(fnmae);
+            sp.txt_lastname2.setText(lnmae);
+            
+            dispose();
+            // TODO add your handling code here:
+    }//GEN-LAST:event_btn_okActionPerformed
+    }
+    private void table_searchnameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_table_searchnameMouseClicked
+        int td = table_searchname.getSelectedRow();
+        if (td > 0) {
+            btn_ok.setEnabled(true);
+        }
+// TODO add your handling code here:
+    }//GEN-LAST:event_table_searchnameMouseClicked
+
+    private void txtp_searchKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtp_searchKeyTyped
+char c = evt.getKeyChar();
+        if (!(Character.isAlphabetic(c) || c == KeyEvent.VK_BACK_SPACE || c == KeyEvent.VK_DELETE)) {
+            getToolkit().beep();
+            evt.consume();
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_txtp_searchKeyTyped
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Psearchname.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Psearchname.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Psearchname.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Psearchname.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                Psearchname dialog = new Psearchname(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(Psearchname.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(Psearchname.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(Psearchname.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(Psearchname.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the dialog */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                Psearchname dialog = new Psearchname(new javax.swing.JFrame(), true);
+//                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+//                    @Override
+//                    public void windowClosing(java.awt.event.WindowEvent e) {
+//                        System.exit(0);
+//                    }
+//                });
+//                dialog.setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_ok;
     private javax.swing.JButton cmd_searchpatient;
-    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table_searchname;

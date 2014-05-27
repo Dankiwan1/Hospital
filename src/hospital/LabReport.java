@@ -6,17 +6,38 @@
 
 package hospital;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import net.proteanit.sql.DbUtils;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JRDesignQuery;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
+
 /**
  *
  * @author Dankiwan
  */
 public class LabReport extends javax.swing.JInternalFrame {
-
+  Connection con = null;
+    ResultSet rs = null;
+    PreparedStatement pst = null;
     /**
      * Creates new form LabReport
      */
     public LabReport() {
         initComponents();
+        con=javaconnect.ConnectDb();
+        loadTestsTable();
     }
 
     /**
@@ -29,71 +50,15 @@ public class LabReport extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jToolBar1 = new javax.swing.JToolBar();
-        jButton2 = new javax.swing.JButton();
-        jSeparator2 = new javax.swing.JToolBar.Separator();
-        jButton3 = new javax.swing.JButton();
-        jSeparator3 = new javax.swing.JToolBar.Separator();
-        jButton4 = new javax.swing.JButton();
-        jSeparator4 = new javax.swing.JToolBar.Separator();
-        jButton5 = new javax.swing.JButton();
-        jSeparator5 = new javax.swing.JToolBar.Separator();
         jButton6 = new javax.swing.JButton();
         jSeparator6 = new javax.swing.JToolBar.Separator();
-        jButton7 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        teststable = new javax.swing.JTable();
 
         setClosable(true);
-        setTitle("LAB REPORTS");
+        setTitle("LAB TESTS REPORTS");
 
         jToolBar1.setRollover(true);
-
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/today-icon.png"))); // NOI18N
-        jButton2.setText("Today");
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton2);
-        jToolBar1.add(jSeparator2);
-
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/week-icon.png"))); // NOI18N
-        jButton3.setText("This week");
-        jButton3.setFocusable(false);
-        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton3);
-        jToolBar1.add(jSeparator3);
-
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/month-icon.png"))); // NOI18N
-        jButton4.setText("This Month");
-        jButton4.setFocusable(false);
-        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton4);
-        jToolBar1.add(jSeparator4);
-
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/document-excel-icon.png"))); // NOI18N
-        jButton5.setText("ALL");
-        jButton5.setFocusable(false);
-        jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton5);
-        jToolBar1.add(jSeparator5);
 
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/printer-icon.png"))); // NOI18N
         jButton6.setText("Print");
@@ -108,19 +73,7 @@ public class LabReport extends javax.swing.JInternalFrame {
         jToolBar1.add(jButton6);
         jToolBar1.add(jSeparator6);
 
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/exit-icon.png"))); // NOI18N
-        jButton7.setText("Close");
-        jButton7.setFocusable(false);
-        jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton7);
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        teststable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -131,7 +84,7 @@ public class LabReport extends javax.swing.JInternalFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(teststable);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -154,50 +107,47 @@ public class LabReport extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
-
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-/*        MessageFormat header=new MessageFormat("Mertmerg Hospital Records");
-        MessageFormat footer=new MessageFormat("Page{0,number,integer}");
-        try{
-            info.print(JTable.PrintMode.NORMAL, header, footer);
-        }
-        catch(java.awt.print.PrinterException e){
-            System.err.format("Cannot print %s%n",e.getMessage());
-        }
-        // TODO add your handling code here:*/
+    try {
+
+                        JasperDesign jd = JRXmlLoader.load("D:\\NetbeansProject\\Hospital\\Reports\\TestsReport.jrxml");
+                        String sql = "(SELECT\n" +
+"     hospitaltests.`TEST_CODE` AS hospitaltests_TEST_CODE,\n" +
+"     hospitaltests.`TEST_NAME` AS hospitaltests_TEST_NAME,\n" +
+"     hospitaltests.`TEST_INITIALS` AS hospitaltests_TEST_INITIALS,\n" +
+"     hospitaltests.`TEST_COST` AS hospitaltests_TEST_COST\n" +
+"FROM\n" +
+"     `hospitaltests` hospitaltests)";
+                        JRDesignQuery newQuery = new JRDesignQuery();
+                        newQuery.setText(sql);
+                        jd.setQuery(newQuery);
+                        JasperReport jr = JasperCompileManager.compileReport(jd);
+                        JasperPrint jp = JasperFillManager.fillReport(jr, null, con);
+                        JasperViewer.viewReport(jp, false);
+
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(null, e);
+                    }
     }//GEN-LAST:event_jButton6ActionPerformed
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        dispose();      // TODO add your handling code here:
-    }//GEN-LAST:event_jButton7ActionPerformed
-
+  public void loadTestsTable(){
+     try {
+         String s2="select * from hospitaltests";
+         pst=con.prepareStatement(s2);
+         rs=pst.executeQuery();
+         if(rs.next()){
+             teststable.setModel(DbUtils.resultSetToTableModel(rs));
+         }
+     } catch (SQLException ex) {
+         Logger.getLogger(LabTestsList.class.getName()).log(Level.SEVERE, null, ex);
+     }
+         
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JToolBar.Separator jSeparator2;
-    private javax.swing.JToolBar.Separator jSeparator3;
-    private javax.swing.JToolBar.Separator jSeparator4;
-    private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar.Separator jSeparator6;
-    private javax.swing.JTable jTable1;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JTable teststable;
     // End of variables declaration//GEN-END:variables
 }

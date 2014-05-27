@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TestsReport" language="groovy" pageWidth="595" pageHeight="520" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="37f1d78f-4c55-4e1c-884e-c278336c22c0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT
+     hospitaltests.`TEST_CODE` AS hospitaltests_TEST_CODE,
+     hospitaltests.`TEST_NAME` AS hospitaltests_TEST_NAME,
+     hospitaltests.`TEST_INITIALS` AS hospitaltests_TEST_INITIALS,
+     hospitaltests.`TEST_COST` AS hospitaltests_TEST_COST
+FROM
+     `hospitaltests` hospitaltests]]>
+	</queryString>
+	<field name="hospitaltests_TEST_CODE" class="java.lang.String"/>
+	<field name="hospitaltests_TEST_NAME" class="java.lang.String"/>
+	<field name="hospitaltests_TEST_INITIALS" class="java.lang.String"/>
+	<field name="hospitaltests_TEST_COST" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="203" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="183" width="555" height="20" backcolor="#C0C0C0" uuid="8d6b6dc1-b3a1-4272-89c3-c052d2445fc1"/>
+			</rectangle>
+			<rectangle radius="10">
+				<reportElement mode="Transparent" x="0" y="0" width="555" height="164" uuid="5784a092-021c-445d-bc21-0c55a4ed2219"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="416" y="61" width="139" height="20" uuid="154af6e5-0751-4ab5-84d5-b835adf81133"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Static text]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="10" width="555" height="31" uuid="3e89cfec-78a0-45d2-990b-6c11499f5d98"/>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MARTMERG MEDICAL CLINIC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="121" width="555" height="30" uuid="72776198-1c87-406b-ae26-71f10204d42b"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[LAB TEST LIST]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="416" y="41" width="139" height="20" uuid="f5908aa9-d5a1-4294-bd99-fa275d298517"/>
+				<text><![CDATA[PHONE:      0722580861]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="61" width="146" height="20" uuid="45cd4519-4492-4b53-9565-bd4a0c99c984"/>
+				<text><![CDATA[KAHAWA SUKARI NAIROBI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="416" y="81" width="139" height="20" uuid="4ceb0ca2-349b-46a1-9be8-ab35ffb05257"/>
+				<text><![CDATA[EMAIL:]]></text>
+			</staticText>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="416" y="101" width="139" height="20" uuid="cdb26947-b774-49cb-b2e5-8b59cd992b92"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="41" width="100" height="20" uuid="7a8ee1c2-a6e2-448b-922c-76ff666054e8"/>
+				<text><![CDATA[P.O. BOX 46915]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="183" width="100" height="20" uuid="4ae6671e-00d2-416d-9a4d-72fc8201dd82"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TEST CODE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="136" y="183" width="100" height="20" uuid="9c30ba42-a543-4c52-bc73-44ce39ed0742"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TEST NAME]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="287" y="183" width="100" height="20" uuid="e8899a8e-34cf-4196-952d-36e9ccbe873f"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TEST INITIALS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="431" y="183" width="100" height="20" uuid="ece04661-ec47-4a59-ba0c-213151b7bd4e"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TEST COST]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="10" y="0" width="100" height="20" uuid="d2d1288a-7e9d-4b26-aedc-316913cca2b8"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{hospitaltests_TEST_CODE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="136" y="0" width="100" height="20" uuid="a5e59a52-8868-4fe7-914c-e38d2124fc7e"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{hospitaltests_TEST_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="287" y="0" width="100" height="20" uuid="5214c9ec-f0f6-4bd2-bc1f-4ded6ceaa5c0"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{hospitaltests_TEST_INITIALS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="431" y="0" width="100" height="20" uuid="4084c681-40c3-49cb-b631-e7b4d2d0765a"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{hospitaltests_TEST_COST}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="22" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="7" width="555" height="15" uuid="d5bf85d6-76c3-4931-8a09-f64d54a65076"/>
+				<textElement>
+					<font size="8" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[MARTMERG MEDICAL CLINIC]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="431" y="2" width="80" height="20" uuid="90424f72-9645-4771-81a9-7d6500bcf1c3"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="511" y="2" width="40" height="20" uuid="70b0085a-a0b3-4365-847f-cd1c2d959519"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

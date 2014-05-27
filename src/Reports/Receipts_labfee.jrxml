@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Receipts_labfee" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="f3067515-8398-466a-830f-33ab2077932f">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="pid" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     patient_lab_bill.`TEST_NAME` AS patient_lab_bill_TEST_NAME,
+     patient_lab_bill.`LAB_FEE` AS patient_lab_bill_LAB_FEE,
+     patient_lab_bill.`PATIENT_ID` AS patient_lab_bill_PATIENT_ID
+FROM
+     `patient_lab_bill` patient_lab_bill
+where patient_lab_bill.`PATIENT_ID`=$P{pid}]]>
+	</queryString>
+	<field name="patient_lab_bill_TEST_NAME" class="java.lang.String"/>
+	<field name="patient_lab_bill_LAB_FEE" class="java.lang.Float"/>
+	<field name="patient_lab_bill_PATIENT_ID" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="2" width="100" height="20" uuid="c3708e07-eb95-44e4-80d1-51575d9d183e"/>
+				<textFieldExpression><![CDATA[$F{patient_lab_bill_TEST_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="455" y="2" width="100" height="20" uuid="3d029a61-48d3-433f-94d9-bbbc636d12cb"/>
+				<textFieldExpression><![CDATA[$F{patient_lab_bill_LAB_FEE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

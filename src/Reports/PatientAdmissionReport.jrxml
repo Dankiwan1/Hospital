@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PatientAdmissionReport" language="groovy" pageWidth="595" pageHeight="480" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b7e9e52d-05cb-4387-a019-70e015c09cb3">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT
+     patient.`TITLE`,
+     patient.`FIRST_NAME`,
+     patient.`LAST_NAME`,
+     patient.`GENDER`,
+     patient.`MOBILE_NO`,
+     patient_category.`AGE` AS patient_category_AGE,
+     patient_category.`PATIENT_CATEGORY` AS PATIENT_CATEGORY
+FROM
+     `patient` patient,
+     `patient_category` patient_category
+WHERE patient_category.PATIENT_CATEGORY='Laboratory' and
+     (patient.PATIENT_ID = patient_category.PATIENT_ID)]]>
+	</queryString>
+	<field name="TITLE" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="FIRST_NAME" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="LAST_NAME" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="GENDER" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="MOBILE_NO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="patient_category_AGE" class="java.lang.Integer"/>
+	<field name="PATIENT_CATEGORY" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="248" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="226" width="555" height="20" backcolor="#CCCCFF" uuid="c6fdf094-a83b-4c18-acf9-af8e22b5b503"/>
+			</rectangle>
+			<rectangle radius="10">
+				<reportElement mode="Transparent" x="0" y="0" width="555" height="164" uuid="98553239-221f-46dc-a18e-d25ee6c2887b"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="13" width="555" height="31" uuid="0b46d353-33b8-41d2-8b40-37cc5073f90b"/>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MARTMERG MEDICAL CLINIC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="44" width="100" height="20" uuid="a8738bbc-4a64-457b-a5a3-3712a0359a12"/>
+				<text><![CDATA[P.O. BOX 46915]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="64" width="146" height="20" uuid="77b5ed92-c1a2-4d94-869d-7be2c1bb7565"/>
+				<text><![CDATA[KAHAWA SUKARI NAIROBI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="416" y="44" width="139" height="20" uuid="015291ff-6a33-4b7d-8c77-4d73655330ae"/>
+				<text><![CDATA[PHONE:      0722580861]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="416" y="64" width="139" height="20" uuid="0bd58188-8da5-4907-8fc5-fd0d228d5cb5"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Static text]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="416" y="84" width="139" height="20" uuid="b816aff2-cc0c-47f6-82cc-ef4f0ef2c64e"/>
+				<text><![CDATA[EMAIL:]]></text>
+			</staticText>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="416" y="104" width="139" height="20" uuid="047ee365-1d80-4f11-9f66-6f110d4d4531"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="124" width="555" height="30" uuid="bac9e9e5-e089-44c0-a4fc-cdc1ac73d526"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[PATIENT ADMISSION REPORT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="226" width="43" height="20" uuid="0202b324-1929-4a69-8949-f159acad5284"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Title]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="74" y="226" width="82" height="20" uuid="48a76962-60ad-4a38-8be4-87a2751e502a"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[First Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="174" y="226" width="80" height="20" uuid="e30293f7-f62a-46b6-bf04-e881ff7a39c2"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Last Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="287" y="226" width="67" height="20" uuid="04a674b6-4688-46b6-92b9-ad2f1fa6e8e9"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Gender]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="471" y="226" width="84" height="20" uuid="dcb309c9-f4fa-4cb1-9dd6-07c13a9301ac"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Age]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="383" y="226" width="74" height="20" uuid="74f0e3fc-e9b6-4319-98c4-154e948a31c4"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Mobile No.]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="62" y="192" width="280" height="20" uuid="a01a9aed-9ecd-4538-9f0c-69b677e7d478"/>
+				<subreportParameter name="pcat">
+					<subreportParameterExpression><![CDATA[$F{PATIENT_CATEGORY}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["D:\\NetbeansProject\\Hospital\\Reports\\PatientAdmissionReport_subreport1.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="62" y="168" width="280" height="24" uuid="46228ccf-0b1d-484f-ba81-87ed1590627f"/>
+				<subreportParameter name="pcat">
+					<subreportParameterExpression><![CDATA[$F{PATIENT_CATEGORY}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["D:\\NetbeansProject\\Hospital\\Reports\\PatientAdmissionReport_subreport.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="10" y="178" width="44" height="34" uuid="0371166f-a2ca-48f1-ad4f-1ec613d89db6"/>
+				<subreportParameter name="pcat">
+					<subreportParameterExpression><![CDATA[$F{PATIENT_CATEGORY}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["D:\\NetbeansProject\\Hospital\\Reports\\PatientAdmissionReport_subreportcount.jasper"]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement x="0" y="142" width="555" height="22" uuid="6245a2c4-b76c-4243-9440-d35eebaa6d9a"/>
+				<textElement textAlignment="Center">
+					<font isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{PATIENT_CATEGORY})]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="43" height="20" uuid="7b0711f9-055a-49ba-8222-96ac527706c4"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{TITLE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="74" y="0" width="82" height="20" uuid="6aeee60d-f6f9-4184-9a0b-abfd2e310e7b"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{FIRST_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="174" y="0" width="80" height="20" uuid="cbacc126-fa29-41e9-9be7-e35da3e65552"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{LAST_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="287" y="0" width="67" height="20" uuid="204ad2b6-68a5-4ba7-8956-4db2c935b626"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{GENDER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="383" y="0" width="74" height="20" uuid="5dcb3ea5-c65b-45f6-9df3-77dacae0c858"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{MOBILE_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="471" y="0" width="84" height="20" uuid="9d95778a-f99e-4ad8-99b0-bbc16b5f9656"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{patient_category_AGE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="24" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="80" height="20" uuid="b6c6c7ca-0473-47da-a1b9-09a83dfacadc"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="80" y="0" width="40" height="20" uuid="7c5971ab-0c27-48a4-a254-b82b5ded81a2"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+</jasperReport>

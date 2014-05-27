@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DrugListrepo" language="groovy" pageWidth="595" pageHeight="550" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="53b320c0-9ed4-4e8a-9201-3b7c9e9ce046">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT
+     hospitalmedicine.`MEDICINE_CODE` AS hospitalmedicine_MEDICINE_CODE,
+     hospitalmedicine.`MEDICINE_INITIALS` AS hospitalmedicine_MEDICINE_INITIALS,
+     hospitalmedicine.`MEDICINE_NAME` AS hospitalmedicine_MEDICINE_NAME,
+     hospitalmedicine.`MEDICINE_QUANTITY` AS hospitalmedicine_MEDICINE_QUANTITY,
+     hospitalmedicine.`MEDICINE_COST` AS hospitalmedicine_MEDICINE_COST
+FROM
+     `hospitalmedicine` hospitalmedicine]]>
+	</queryString>
+	<field name="hospitalmedicine_MEDICINE_CODE" class="java.lang.String"/>
+	<field name="hospitalmedicine_MEDICINE_INITIALS" class="java.lang.String"/>
+	<field name="hospitalmedicine_MEDICINE_NAME" class="java.lang.String"/>
+	<field name="hospitalmedicine_MEDICINE_QUANTITY" class="java.lang.String"/>
+	<field name="hospitalmedicine_MEDICINE_COST" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="197" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="177" width="555" height="20" forecolor="#C0C0C0" backcolor="#C0C0C0" uuid="8d32bd9e-5f43-4cb5-94a2-2d9133e63b58"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="416" y="86" width="139" height="20" uuid="cd2368c3-61a5-436c-ab2c-10d719e18988"/>
+				<text><![CDATA[EMAIL:]]></text>
+			</staticText>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="416" y="106" width="139" height="20" uuid="d582641d-f56d-474b-8789-e7e42ed835c6"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="46" width="100" height="20" uuid="459e6f53-72b2-4e72-8847-5946dbf97720"/>
+				<text><![CDATA[P.O. BOX 46915]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="416" y="46" width="139" height="20" uuid="f5f16458-f84a-49d3-b4d9-36ca8d856df3"/>
+				<text><![CDATA[PHONE:      0722580861]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="66" width="146" height="20" uuid="e7277407-c722-4011-8598-e81242b128ec"/>
+				<text><![CDATA[KAHAWA SUKARI NAIROBI]]></text>
+			</staticText>
+			<rectangle radius="10">
+				<reportElement mode="Transparent" x="0" y="5" width="555" height="164" uuid="5a2fcd27-96ab-45a2-8dd4-f7d4ccf06b4a"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="126" width="555" height="30" uuid="114d4787-ba77-4d9a-a769-19d76b6537d7"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[DRUGS LIST]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="416" y="66" width="139" height="20" uuid="7e7d956e-c5f8-4a92-b0d9-7f5de1185a48"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Static text]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="15" width="555" height="31" uuid="1a271489-3e37-4e58-bbd9-e4d9277d1dbc"/>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MARTMERG MEDICAL CLINIC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="177" width="106" height="20" uuid="da62c407-feb2-4803-aa1d-c247e9b1189b"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BATCH NO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="124" y="177" width="106" height="20" uuid="106aa9d4-d803-484c-85d8-87d8623d35a0"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INITIALS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="239" y="177" width="91" height="20" uuid="71a74ef6-254e-4c9d-a0b1-9ec75ebb6bf9"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NAME]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="355" y="177" width="74" height="20" uuid="a69b05c3-3442-4cd7-aa5f-018da180bc82"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[QUANTITY]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="449" y="177" width="106" height="20" uuid="b558b678-ada8-4229-a6b0-2f79b1068be2"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COST]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="10" y="0" width="100" height="20" uuid="a1e29553-3604-4f7f-a353-b06701dae080"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{hospitalmedicine_MEDICINE_CODE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="130" y="0" width="100" height="20" uuid="e6f195cb-62f2-4ea2-bba0-99eb428a964c"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{hospitalmedicine_MEDICINE_INITIALS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="245" y="0" width="85" height="20" uuid="2721bf03-21e2-4a44-a52b-82a26f925745"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{hospitalmedicine_MEDICINE_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="361" y="0" width="68" height="20" uuid="cd439334-dbfc-4cff-9131-85db1616b9c6"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{hospitalmedicine_MEDICINE_QUANTITY}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="451" y="2" width="100" height="20" uuid="7a39d70f-fb59-4769-a65a-588d2e83d399"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{hospitalmedicine_MEDICINE_COST}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="28" splitType="Stretch">
+			<staticText>
+				<reportElement x="6" y="1" width="324" height="15" uuid="93a18320-ea3e-43c1-b9fa-c3481901ab47"/>
+				<textElement>
+					<font size="8" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[MARTMERG MEDICAL CLINIC]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="435" y="5" width="80" height="20" uuid="86feb1a3-f60c-4294-8c2a-2e3d7bc799c7"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="5" width="40" height="20" uuid="7a376dcd-1178-4762-a6c1-b05fdf9dc72c"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

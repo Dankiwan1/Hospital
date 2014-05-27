@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Patient_Summary_subrepinjection" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="5fb96c13-cb1b-42f6-adb4-5140e40f10ca">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="pid" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     patient_injection.`NAME` AS patient_injection_NAME,
+     patient_injection.`DESCRIPTION` AS patient_injection_DESCRIPTION,
+     patient_injection.`INJECTION_DATE` AS patient_injection_INJECTION_DATE
+FROM
+     `patient_injection` patient_injection where
+patient_id=$P{pid}]]>
+	</queryString>
+	<field name="patient_injection_NAME" class="java.lang.String"/>
+	<field name="patient_injection_DESCRIPTION" class="java.lang.String"/>
+	<field name="patient_injection_INJECTION_DATE" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="32" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="32" backcolor="#CEEEEA" uuid="98c69a3c-8892-4b21-ab47-bf6db23af303"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="17" y="12" width="100" height="20" uuid="94f75d77-262e-433b-8e9c-4e21db735dcc"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="184" y="12" width="100" height="20" uuid="4dc4dfbf-6dee-4ba5-b756-82265d70231b"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Description]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="406" y="12" width="100" height="20" uuid="a209b103-f57a-4009-ad44-8e61a489349b"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Injection Date]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="34" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="34" backcolor="#E1F9DD" uuid="023a5d5b-1cb3-4029-bf91-6d748de37ab8"/>
+			</rectangle>
+			<textField>
+				<reportElement x="17" y="14" width="100" height="20" uuid="6cdd3718-7a9f-4085-9838-04c01df23246"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{patient_injection_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="184" y="14" width="100" height="20" uuid="f7a2651c-2f35-4810-bdf0-5c9f41b9d2cc"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{patient_injection_DESCRIPTION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="406" y="14" width="100" height="20" uuid="9cd5e659-f676-4ad4-87f0-069e382f4789"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{patient_injection_INJECTION_DATE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="19" splitType="Stretch"/>
+	</summary>
+</jasperReport>

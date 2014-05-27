@@ -11,14 +11,18 @@ package hospital;
  * @author Dankiwan
  */
 public class Edituser extends javax.swing.JInternalFrame {
-
+private  static Edituser edituserInstance;
     /**
      * Creates new form Edituser
      */
     public Edituser() {
         initComponents();
     }
-
+public Edituser EditUserInstance(){
+    if(edituserInstance==null){
+    edituserInstance=new Edituser();}
+    return edituserInstance;
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package hospital;
 
 import java.sql.Connection;
@@ -21,18 +20,28 @@ import net.proteanit.sql.DbUtils;
  * @author Dankiwan
  */
 public class Adduser extends javax.swing.JInternalFrame {
-  Connection con=null;
-    ResultSet rs=null;
-    PreparedStatement pst=null;
-     String user_category,location,title,username,password,fname,lname,image,gender,mob;
-     int mobile;
+
+    Connection con = null;
+    ResultSet rs = null;
+    PreparedStatement pst = null;
+    String user_category, location, title, username, password, fname, lname, image, gender, mob, userid;
+    int mobile;
+    private static Adduser adduserinstance;
+
     /**
      * Creates new form Adduser
      */
     public Adduser() {
         initComponents();
-        con=javaconnect.ConnectDb();
+        con = javaconnect.ConnectDb();
         Useradd_table();
+    }
+
+    public Adduser AdduserInstance() {
+        if (adduserinstance == null) {
+            adduserinstance = new Adduser();
+        }
+        return adduserinstance;
     }
 
     /**
@@ -51,7 +60,6 @@ public class Adduser extends javax.swing.JInternalFrame {
         jSeparator3 = new javax.swing.JToolBar.Separator();
         jButton3 = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
-        jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         User_table = new javax.swing.JTable();
         jPanel5 = new javax.swing.JPanel();
@@ -78,6 +86,8 @@ public class Adduser extends javax.swing.JInternalFrame {
         txt_password = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jc_usertype = new javax.swing.JComboBox();
+        jPanel6 = new javax.swing.JPanel();
+        txt_useridd = new javax.swing.JTextField();
 
         setClosable(true);
         setTitle("ADD USER");
@@ -123,23 +133,9 @@ public class Adduser extends javax.swing.JInternalFrame {
         jToolBar2.add(jButton3);
         jToolBar2.add(jSeparator2);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 181, Short.MAX_VALUE)
-        );
-
         User_table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4"
@@ -289,12 +285,43 @@ public class Adduser extends javax.swing.JInternalFrame {
 
         jLabel6.setText("User Type:");
 
-        jc_usertype.setModel(new javax.swing.DefaultComboBoxModel(new String[] { " ", "Doctor", "Reception", "Lab Technician", "Admin" }));
+        jc_usertype.setModel(new javax.swing.DefaultComboBoxModel(new String[] { " ", "Reception", "Doctor", "Lab Technician", "Pharmacist", "Admin" }));
+        jc_usertype.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jc_usertypeMouseClicked(evt);
+            }
+        });
         jc_usertype.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jc_usertypeActionPerformed(evt);
             }
         });
+
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("USER ID"));
+
+        txt_useridd.setEditable(false);
+        txt_useridd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_useriddActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(txt_useridd, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addComponent(txt_useridd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(43, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -319,28 +346,33 @@ public class Adduser extends javax.swing.JInternalFrame {
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jc_usertype, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(167, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(9, 9, 9)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(jc_usertype, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(txt_username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(txt_password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jc_location, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(jc_usertype, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(txt_username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(txt_password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(jc_location, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -349,9 +381,9 @@ public class Adduser extends javax.swing.JInternalFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -371,11 +403,8 @@ public class Adduser extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(2, 2, 2)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE))
             .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -384,19 +413,20 @@ public class Adduser extends javax.swing.JInternalFrame {
                 .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 4, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(4, 4, 4))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-     Useradd();
-     Useradd_table();
-             // TODO add your handling code here:
+        Useradd();
+        Useradd_table();
+        // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -424,54 +454,94 @@ public class Adduser extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jc_usertypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jc_usertypeActionPerformed
-        // TODO add your handling code here:
+if (jc_usertype.getSelectedIndex() == 0) {
+            txt_useridd.setText(null);
+        } else if (jc_usertype.getSelectedIndex() == 1) {
+            txt_useridd.setText("12");
+        } else if (jc_usertype.getSelectedIndex() == 2) {
+            txt_useridd.setText("14");
+
+        } else if (jc_usertype.getSelectedIndex() == 3) {
+            txt_useridd.setText("16");
+
+        } else if (jc_usertype.getSelectedIndex() == 4) {
+            txt_useridd.setText("18");
+
+        } else if (jc_usertype.getSelectedIndex() == 5) {
+            txt_useridd.setText("20");
+
+        }        // TODO add your handling code here:
     }//GEN-LAST:event_jc_usertypeActionPerformed
- private void Useradd_table(){
-        try{
-            String filltable="select * from user";
-            pst=con.prepareStatement(filltable);
-            rs=pst.executeQuery( );
-           User_table.setModel(DbUtils.resultSetToTableModel(rs));
-        
+
+    private void jc_usertypeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jc_usertypeMouseClicked
+        if (jc_usertype.getSelectedIndex() == 0) {
+            txt_useridd.setText(null);
+        } else if (jc_usertype.getSelectedIndex() == 1) {
+            txt_useridd.setText("12");
+        } else if (jc_usertype.getSelectedIndex() == 2) {
+            txt_useridd.setText("14");
+
+        } else if (jc_usertype.getSelectedIndex() == 3) {
+            txt_useridd.setText("16");
+
+        } else if (jc_usertype.getSelectedIndex() == 4) {
+            txt_useridd.setText("18");
+
+        } else if (jc_usertype.getSelectedIndex() == 5) {
+            txt_useridd.setText("20");
+
+        }// TODO add your handling code here:
+    }//GEN-LAST:event_jc_usertypeMouseClicked
+
+    private void txt_useriddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_useriddActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_useriddActionPerformed
+    private void Useradd_table() {
+        try {
+            String filltable = "select * from user";
+            pst = con.prepareStatement(filltable);
+            rs = pst.executeQuery();
+            User_table.setModel(DbUtils.resultSetToTableModel(rs));
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
         }
-        catch(Exception e){
-        JOptionPane.showMessageDialog(null,e);
     }
-    }
-public void  Useradd(){
-    try{
-        user_category= (String) jc_usertype.getSelectedItem();
-        location=(String) jc_location.getSelectedItem();
-        title=(String) jc_title.getSelectedItem();
-        mob=txt_mobileno.getText();
-   //  mobile=Integer.parseInt(mob);
-        gender=(String) jC_gender.getSelectedItem();
-        password=txt_password.getText();
-        username=txt_username.getText();
-        fname=txt_firstname.getText();
-        lname=txt_lastname.getText();
-        image=user_image.getName();
-        //  JOptionPane.showMessageDialog(null, "Records saved.");
-        String insertuser="insert into user (TITLE, FIRST_NAME, LAST_NAME, CATEGORY, username, password, location, MOBILE_NO, Gender, IMAGE) values('"+title+"','"+fname+"','"+lname+"','"+user_category+"','"+username+"','"+password+"','"+location+"','"+mob+"','"+gender+"','"+image+"')";
-         Statement sttm=con.createStatement();
+
+    public void Useradd() {
+        try {
+            user_category = (String) jc_usertype.getSelectedItem();
+            location = (String) jc_location.getSelectedItem();
+            title = (String) jc_title.getSelectedItem();
+            mob = txt_mobileno.getText();
+            //  mobile=Integer.parseInt(mob);
+            gender = (String) jC_gender.getSelectedItem();
+            password = txt_password.getText();
+            username = txt_username.getText();
+            fname = txt_firstname.getText();
+            lname = txt_lastname.getText();
+            image = user_image.getName();
+            userid = txt_useridd.getText();
+            //  JOptionPane.showMessageDialog(null, "Records saved.");
+            String insertuser = "insert into user (USER_ID,TITLE, FIRST_NAME, LAST_NAME, CATEGORY, username, password, location, MOBILE_NO, Gender, IMAGE) values('" + userid + "','" + title + "','" + fname + "','" + lname + "','" + user_category + "','" + username + "','" + password + "','" + location + "','" + mob + "','" + gender + "','" + image + "')";
+            Statement sttm = con.createStatement();
             sttm.executeUpdate(insertuser);
             JOptionPane.showMessageDialog(null, "User added.....");
-            
-          txt_password.setText("");
-     txt_username.setText("");
-        txt_firstname.setText("");
-        txt_lastname.setText("");
-        txt_mobileno.setText("");
-     /*   jc_title.setSelectedItem("");
-        jc_usertype.setSelectedItem("");
-        jC_gender.setSelectedItem("");
-        jc_location.setSelectedItem("");*/
-      //  user_image.;
-    }
-    catch (SQLException ex) {
-           Logger.getLogger(Adduser.class.getName()).log(Level.SEVERE, null, ex);
+
+            txt_password.setText("");
+            txt_username.setText("");
+            txt_firstname.setText("");
+            txt_lastname.setText("");
+            txt_mobileno.setText("");
+            jc_title.setSelectedIndex(0);
+            jc_usertype.setSelectedIndex(0);
+            jC_gender.setSelectedIndex(0);
+            jc_location.setSelectedIndex(0);
+            txt_useridd.setText("");
+        } catch (SQLException ex) {
+            Logger.getLogger(Adduser.class.getName()).log(Level.SEVERE, null, ex);
         }
-}
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable User_table;
     private javax.swing.JButton jButton1;
@@ -489,10 +559,10 @@ public void  Useradd(){
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
@@ -505,6 +575,7 @@ public void  Useradd(){
     private javax.swing.JTextField txt_lastname;
     private javax.swing.JTextField txt_mobileno;
     private javax.swing.JTextField txt_password;
+    private javax.swing.JTextField txt_useridd;
     private javax.swing.JTextField txt_username;
     private javax.swing.JDesktopPane user_image;
     // End of variables declaration//GEN-END:variables

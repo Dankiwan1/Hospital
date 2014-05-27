@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Receipts" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="dff9297e-466a-402c-816b-ace0aea8cdaa">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="5"/>
+	<queryString>
+		<![CDATA[SELECT
+     patient_billing.`CONSULTATION_FEE` AS patient_billing_CONSULTATION_FEE,
+     patient_billing.`MEDICAL_FEE` AS patient_billing_MEDICAL_FEE,
+     patient_billing.`LAB_FEE` AS patient_billing_LAB_FEE,
+     patient.`TITLE` AS patient_TITLE,
+     patient.`FIRST_NAME` AS patient_FIRST_NAME,
+     patient.`LAST_NAME` AS patient_LAST_NAME,
+     patient.`GENDER` AS patient_GENDER,
+     patient.`EMAIL` AS patient_EMAIL,
+     patient.`MOBILE_NO` AS patient_MOBILE_NO,
+     patient.`PATIENT_ID` AS patient_PATIENT_ID,
+     payment.`Receipt_No` AS payment_Receipt_No,
+     payment.`Amount` AS payment_Amount
+FROM
+     `patient_billing` patient_billing INNER JOIN `patient` patient ON patient_billing.`PATIENT_ID` = patient.`PATIENT_ID`
+     INNER JOIN `payment` payment ON patient.`PATIENT_ID` = payment.`PATIENT_ID`
+WHERE
+     patient.Patient_id = 10]]>
+	</queryString>
+	<field name="patient_billing_CONSULTATION_FEE" class="java.math.BigDecimal"/>
+	<field name="patient_billing_MEDICAL_FEE" class="java.math.BigDecimal"/>
+	<field name="patient_billing_LAB_FEE" class="java.math.BigDecimal"/>
+	<field name="patient_TITLE" class="java.lang.String"/>
+	<field name="patient_FIRST_NAME" class="java.lang.String"/>
+	<field name="patient_LAST_NAME" class="java.lang.String"/>
+	<field name="patient_GENDER" class="java.lang.String"/>
+	<field name="patient_EMAIL" class="java.lang.String"/>
+	<field name="patient_MOBILE_NO" class="java.lang.String"/>
+	<field name="patient_PATIENT_ID" class="java.lang.Integer"/>
+	<field name="payment_Receipt_No" class="java.lang.Integer"/>
+	<field name="payment_Amount" class="java.lang.Float"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="240" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="2" y="3" width="553" height="172" uuid="cb911980-bb82-4d0b-b65c-c50fb9afef83"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="3" width="555" height="35" uuid="1e581463-f661-4e1b-975d-928ffb3cbb3a"/>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[MARTMERG MEDICAL CLINIC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="38" width="163" height="20" uuid="7e154bee-2d0e-46c1-b4f3-92aea819709b"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[P.O. BOX 46915]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="58" width="163" height="20" uuid="8411b4f8-a015-4648-b2a5-6f63a47947c4"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[KAHAWA SUKARI NAIROBI]]></text>
+			</staticText>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="406" y="115" width="149" height="20" uuid="6a830235-f749-495f-92d7-f3190651b3aa"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="406" y="58" width="149" height="20" uuid="af643f0e-f864-4636-a3a3-ae1fa69d3153"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Static text]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="406" y="78" width="149" height="20" uuid="14ac5099-75a3-4e2c-ab46-061ad32b9dfc"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EMAIL:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="406" y="38" width="149" height="20" uuid="37a79c78-905f-428c-85d4-06f178065396"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PHONE:      0722580861]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="135" width="555" height="20" uuid="919c756a-6ca1-4e17-8874-94fcacca1f64"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Receipt]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="1" y="175" width="40" height="20" uuid="433f6dc6-26db-450a-a145-0087152f50d8"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{patient_TITLE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="41" y="175" width="60" height="20" uuid="434c2ca8-48c2-4258-917e-e3e3e33a4fbe"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{patient_FIRST_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="101" y="175" width="63" height="20" uuid="26ba7c31-9fa5-41f3-b759-ed8d1fcc4a9f"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{patient_LAST_NAME}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="0" y="220" width="555" height="20" backcolor="#CCCCFF" uuid="fcf0a40b-9f81-4665-9bbe-62333755f5a1"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="220" width="100" height="20" uuid="9e1768b8-9c92-4230-9f90-3591040ebd0d"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Description]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="443" y="220" width="70" height="20" uuid="6f8c10dd-c859-4fb6-b0df-2026d62a54be"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Price]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="468" y="155" width="87" height="20" uuid="e4bc7660-1df0-4335-99d7-182397f00eb2"/>
+				<textFieldExpression><![CDATA[$F{payment_Receipt_No}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="408" y="155" width="56" height="20" uuid="5a2bfafb-32ce-49a6-a8bf-88814259379c"/>
+				<text><![CDATA[Receipt #]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="453" y="0" width="60" height="20" uuid="623c890c-7d72-45d5-a792-17fcfce02424"/>
+				<textFieldExpression><![CDATA[$F{patient_billing_CONSULTATION_FEE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="20" uuid="6b382058-fe09-4e5a-b189-358c9e8da616"/>
+				<text><![CDATA[Consultation]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="230" splitType="Stretch">
+			<subreport>
+				<reportElement x="0" y="23" width="555" height="72" uuid="02d9876d-66b7-49ef-ba78-f19d56fd5951"/>
+				<subreportParameter name="pid">
+					<subreportParameterExpression><![CDATA[$F{patient_PATIENT_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["D:\\NetbeansProject\\Hospital\\Reports\\Receipts_drugs.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="0" y="115" width="555" height="90" uuid="c0517353-5160-4927-93da-4984c03567df"/>
+				<subreportParameter name="pid">
+					<subreportParameterExpression><![CDATA[$F{patient_PATIENT_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["D:\\NetbeansProject\\Hospital\\Reports\\Receipts_labfee.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="1" y="2" width="100" height="20" uuid="c3b81af8-bb69-4722-a286-d3d11ad6bb26"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Medication]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="95" width="100" height="20" uuid="8349d37e-122b-4404-bcbe-93cd53706e84"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Labs]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="445" y="205" width="100" height="20" uuid="21a5d4e7-bdcc-4533-9512-6620eaf9940d"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{payment_Amount}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="337" y="205" width="100" height="20" uuid="fd42d84a-628e-40c6-912b-7670129a5df5"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Amount]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<summary>
+		<band height="49" splitType="Stretch">
+			<staticText>
+				<reportElement x="2" y="3" width="553" height="20" uuid="0d620058-3c18-462e-b5ff-077bd2f2274e"/>
+				<textElement textAlignment="Center">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Wishing you a quick recoverly]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

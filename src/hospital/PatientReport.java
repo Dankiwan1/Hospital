@@ -3,8 +3,25 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package hospital;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import net.proteanit.sql.DbUtils;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JRDesignQuery;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -12,11 +29,35 @@ package hospital;
  */
 public class PatientReport extends javax.swing.JInternalFrame {
 
+    Connection con = null;
+    ResultSet rs = null;
+    PreparedStatement pst = null;
+    int rr;
+
     /**
      * Creates new form PatientReport
      */
     public PatientReport() {
         initComponents();
+        con = javaconnect.ConnectDb();
+        AllUpdate_table();
+        combofill();
+        jc_patient_category.setSelectedIndex(0);
+    }
+
+    public void combofill() {
+        try {
+            String sql1 = "select category_name from hospital_patient_category ";
+            pst = con.prepareStatement(sql1);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                String name = rs.getString("category_name");
+                jc_patient_category.addItem(name);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(NewPatient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     /**
@@ -39,9 +80,11 @@ public class PatientReport extends javax.swing.JInternalFrame {
         jSeparator5 = new javax.swing.JToolBar.Separator();
         jButton6 = new javax.swing.JButton();
         jSeparator6 = new javax.swing.JToolBar.Separator();
-        jButton7 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        patient_table_report = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jc_patient_category = new javax.swing.JComboBox();
 
         setClosable(true);
         setTitle("PATIENT REPORTS");
@@ -108,19 +151,7 @@ public class PatientReport extends javax.swing.JInternalFrame {
         jToolBar1.add(jButton6);
         jToolBar1.add(jSeparator6);
 
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/exit-icon.png"))); // NOI18N
-        jButton7.setText("Close");
-        jButton7.setFocusable(false);
-        jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton7);
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        patient_table_report.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -131,24 +162,79 @@ public class PatientReport extends javax.swing.JInternalFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(patient_table_report);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jLabel2.setText("Choose a Category");
+
+        jc_patient_category.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "All" }));
+        jc_patient_category.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jc_patient_categoryMouseClicked(evt);
+            }
+        });
+        jc_patient_category.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+                jc_patient_categoryPopupMenuWillBecomeInvisible(evt);
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+        });
+        jc_patient_category.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jc_patient_categoryActionPerformed(evt);
+            }
+        });
+        jc_patient_category.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jc_patient_categoryKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jc_patient_categoryKeyReleased(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jc_patient_category, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                    .addComponent(jc_patient_category, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 954, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jScrollPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -168,36 +254,124 @@ public class PatientReport extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-      /*  MessageFormat header=new MessageFormat("Mertmerg Hospital Records");
-        MessageFormat footer=new MessageFormat("Page{0,number,integer}");
-        try{
-            info.print(JTable.PrintMode.NORMAL, header, footer);
-        }
-        catch(java.awt.print.PrinterException e){
-            System.err.format("Cannot print %s%n",e.getMessage());
-        }
-        // TODO add your handling code here:*/
+        /*  MessageFormat header=new MessageFormat("Mertmerg Hospital Records");
+         MessageFormat footer=new MessageFormat("Page{0,number,integer}");
+         try{
+         info.print(JTable.PrintMode.NORMAL, header, footer);
+         }
+         catch(java.awt.print.PrinterException e){
+         System.err.format("Cannot print %s%n",e.getMessage());
+         }
+        
+         // TODO add your handling code here:*/
+        printrepo();
     }//GEN-LAST:event_jButton6ActionPerformed
 
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        dispose();      // TODO add your handling code here:
-    }//GEN-LAST:event_jButton7ActionPerformed
+    private void jc_patient_categoryPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_jc_patient_categoryPopupMenuWillBecomeInvisible
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jc_patient_categoryPopupMenuWillBecomeInvisible
 
+    private void jc_patient_categoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jc_patient_categoryActionPerformed
+        AllUpdate_table();        // TODO add your handling code here:
+    }//GEN-LAST:event_jc_patient_categoryActionPerformed
 
+    private void jc_patient_categoryKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jc_patient_categoryKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jc_patient_categoryKeyPressed
+
+    private void jc_patient_categoryKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jc_patient_categoryKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jc_patient_categoryKeyReleased
+
+    private void jc_patient_categoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jc_patient_categoryMouseClicked
+        AllUpdate_table();        // TODO add your handling code here:
+    }//GEN-LAST:event_jc_patient_categoryMouseClicked
+    public void printrepo() {
+        try {
+            rr = jc_patient_category.getSelectedIndex();
+            if (rr == 0) {
+                try {
+                    JasperDesign jd = JRXmlLoader.load("Reports\\PatientAddmissionAll.jrxml");
+                    String sql = "SELECT patient.`TITLE`, patient.`FIRST_NAME`, "
+                            + "patient.`LAST_NAME`, patient.`GENDER`, patient.`MOBILE_NO`,"
+                            + " patient_category.`AGE` AS patient_category_AGE,  "
+                            + "patient_category.`PATIENT_CATEGORY` AS PATIENT_CATEGORY FROM `patient` "
+                            + "patient, `patient_category` patient_category WHERE"
+                            + "  (patient.PATIENT_ID = patient_category.PATIENT_ID)";
+                    JRDesignQuery newQuery = new JRDesignQuery();
+                    newQuery.setText(sql);
+                    jd.setQuery(newQuery);
+                    JasperReport jr = JasperCompileManager.compileReport(jd);
+                    JasperPrint jp = JasperFillManager.fillReport(jr, null, con);
+                    JasperViewer.viewReport(jp, false);
+
+                } catch (JRException ex) {
+                    JOptionPane.showMessageDialog(null, ex);
+
+                    return;
+                }
+            } else {
+
+                JasperDesign jd = JRXmlLoader.load("D:\\NetbeansProject\\Hospital\\Reports\\PatientAdmissionReport.jrxml");
+                String sql = "SELECT patient.`TITLE`, patient.`FIRST_NAME`,patient.`LAST_NAME`, patient."
+                        + "`GENDER`,patient.`MOBILE_NO`,patient_category.`AGE` AS patient_category_AGE,"
+                        + " patient_category.`PATIENT_CATEGORY` AS PATIENT_CATEGORY FROM `patient` patient,"
+                        + " `patient_category` patient_category WHERE patient_category.PATIENT_CATEGORY='" + jc_patient_category.getSelectedItem() + "' and (patient.PATIENT_ID = patient_category.PATIENT_ID)";
+                JRDesignQuery newQuery = new JRDesignQuery();
+                newQuery.setText(sql);
+                jd.setQuery(newQuery);
+                JasperReport jr = JasperCompileManager.compileReport(jd);
+                JasperPrint jp = JasperFillManager.fillReport(jr, null, con);
+                JasperViewer.viewReport(jp, false);
+            }
+        } catch (JRException ex) {
+            Logger.getLogger(PatientReport.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void AllUpdate_table() {
+        if (jc_patient_category.getSelectedIndex() == 0) {
+            try {
+                String update = "SELECT  patient.TITLE as 'Title',patient.FIRST_NAME as 'First Name',patient.LAST_NAME as 'Last Name',patient.GENDER as 'Gender',patient.MOBILE_NO as 'Mobile No'from patient, patient_category where (patient.PATIENT_ID=patient_category.PATIENT_ID)";
+
+                pst = con.prepareStatement(update);
+
+                rs = pst.executeQuery();
+                patient_table_report.setModel(DbUtils.resultSetToTableModel(rs));
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+        } else if (jc_patient_category.getSelectedIndex() >0) {
+            try {
+                String update = "SELECT  patient.TITLE as 'Title',patient.FIRST_NAME as 'First Name',patient.LAST_NAME as 'Last Name',patient.GENDER as 'Gender',patient.MOBILE_NO as 'Mobile No.'from patient, patient_category where (patient.PATIENT_ID=patient_category.PATIENT_ID) and patient_category='" + jc_patient_category.getSelectedItem() + "'";
+                pst = con.prepareStatement(update);
+
+                rs = pst.executeQuery();
+                patient_table_report.setModel(DbUtils.resultSetToTableModel(rs));
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, ex);// Logger.getLogger(PatientReport.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+        //    patient_table_report.setModel(DbUtils.resultSetToTableModel(null));
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator4;
     private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar.Separator jSeparator6;
-    private javax.swing.JTable jTable1;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JComboBox jc_patient_category;
+    private javax.swing.JTable patient_table_report;
     // End of variables declaration//GEN-END:variables
 }

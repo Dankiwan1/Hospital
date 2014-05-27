@@ -8,6 +8,8 @@ package hospital;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,21 +20,27 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
+import javax.swing.border.Border;
 import org.pushingpixels.flamingo.api.common.JCommandButton;
 import org.pushingpixels.flamingo.api.common.RichTooltip;
 import org.pushingpixels.flamingo.api.common.icon.ImageWrapperResizableIcon;
@@ -57,35 +65,67 @@ import test.svg.transcoded.printer;
  * @author Dankiwan
  */
 public class Home extends JRibbonFrame {
-Connection con=null;
-ResultSet rs=null;
-PreparedStatement pst=null;
-JDesktopPane desktop;
-ImageIcon img = new ImageIcon("images/user.png");
-JPanel centerpanel, leftpanel, rightpanel;
-JLabel time, date,logdetail;
-public ResizableIcon appIcon;
-public String me;
-JCommandButton button1, button2;
+
+    Connection con = null;
+    ResultSet rs = null;
+    PreparedStatement pst = null;
+
+    JDesktopPane desktop;
+   // ImageIcon img = new ImageIcon("images/user.png");
+    //ImageIcon rpa = new ImageIcon("images/Get-Info-icon.png");
+    JPanel centerrpanel, leftpanel, rightpanel;
+    JLabel time, date, logdetail, user, hosi;
+    public String me, ufname, ulname;
+    JButton clickbutton;
+    JCommandButton Receptionbutton,
+            PatientRButton, SearchPButton, DoctorAssignbtn,
+            consultationbtn, observationbtn, Diagnosisbtn,
+            Prescriptionbtn, PatientHistbtn, PatientFollbtn,
+            Labpresbtn, Bloodtstbtn, othertstbtn, labhistbtn,
+            labtstbtn, Patientdrugbtn, druglstbtn,
+            billdashbbtn, patientbillbtn, invoicesbtn,
+            paymentsbtn, receiptsbtn, patientAdmtnrbtn,
+            patienttstrbtn,
+            patientbillrbtn, druglistbtn,
+            labtstsrbtn, userlogrbtn, adduserbtn, edituserbtn, deluserbtn, viewuserbtn, backupbtn, testpricebtn;
+
+    private JPanel pnlMain;
+    private JPanel pnlTools;
+    JTextArea jarea;
+    int id;
+    private int tabCounter = 0;
+    JTabbedPane tab, centerpanel;
+  //  Icon CLOSE_TAB_ICON = new ImageIcon(("images/Stethoscope-icon.png"));
+  //  Icon PAGE_ICON = new ImageIcon(("images/Save-icon.png"));
+  //private int tabCount = 0;
+
+    //  String title;
+    // Icon icon;
     //   setting ribbon buttons with images
     public static ResizableIcon getResizableIconFromResource(String resource) {
         return ImageWrapperResizableIcon.getIcon(Home.class.getClassLoader().getResource(resource), new Dimension(48, 48));
     }
-      //icon image
-   
-    
-    
+
+    public static ResizableIcon getSmallIconFromResource(String resource) {
+        return ImageWrapperResizableIcon.getIcon(Home.class.getClassLoader().getResource(resource), new Dimension(18, 18));
+    }
+
+    public static final String PROPERTY_APPLICATION_ICON = "images/Hospital-icon.png";
+
+//icon image
     public Home(String loggedin_user) {
         super();
-        con=javaconnect.ConnectDb();
+        con = javaconnect.ConnectDb();
+
         //Screen size
-        int inset = 30;
+        int inset = 10;
         Dimension dime = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(inset, 20,
+        setBounds(inset, 10,
                 dime.width - inset * 2,
                 dime.height - inset * 2);
         setVisible(true);
-        setTitle("m.name()");
+        setTitle("MARTMERG MEDICAL CLINIC");
+
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowListener() {
 
@@ -96,29 +136,32 @@ JCommandButton button1, button2;
 
             @Override
             public void windowClosing(WindowEvent we) {
-               // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            int p = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_CANCEL_OPTION);
-                 if(p == JOptionPane.YES_OPTION) {
+                // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                int p = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_CANCEL_OPTION);
+                if (p == JOptionPane.YES_OPTION) {
                     try {
-                        String sqql = "Update user set Status='no' where USER_ID='"+me+"'";
+                        String sqql = "Update user set Status='no' where USER_ID='" + me + "'";
+                        String sqqll = "Update user_log set Status='Logged out' where  Status='Loggedin'and USER_ID='" + me + "'";
+
                         Statement stm = con.createStatement();
                         stm.executeUpdate(sqql);
+                        Statement stmm = con.createStatement();
+                        stmm.executeUpdate(sqqll);
+
                     } catch (Exception e) {
                         JOptionPane.showMessageDialog(null, e);
                     }
                     System.exit(0);
-                   // Login bn=new Login();
-                  //  bn.setVisible(true);
+                    // Login bn=new Login();
+                    //  bn.setVisible(true);
+                } else {
+                    //do nothing
                 }
-                 else{
-                     //do nothing
-                 }
-           
             }
 
             @Override
             public void windowClosed(WindowEvent we) {
-              //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
             @Override
@@ -128,32 +171,34 @@ JCommandButton button1, button2;
 
             @Override
             public void windowDeiconified(WindowEvent we) {
-               // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
             @Override
             public void windowActivated(WindowEvent we) {
-            //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
             @Override
             public void windowDeactivated(WindowEvent we) {
-             //   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                //   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
         });
-            
-        setIconImage(img.getImage());
         compo();
+      
         datenandtime();
-        me=loggedin_user;
-       loggedin();  
+        me = loggedin_user;
+        loggedin();
+        logedin_user();
+        id = Integer.parseInt(me);
+        privaleges();
+       
     }
-  
 
     public void compo() {
 
-        //APPLICATION MENU     
+        //APPLICATION MENU 
         RibbonApplicationMenuEntryPrimary amEntryPrint = new RibbonApplicationMenuEntryPrimary(
                 new document_print(), "Print", new ActionListener() {
                     @Override
@@ -217,9 +262,10 @@ JCommandButton button1, button2;
                 PrintSelect, PrintDefault, PrintPreview);
 
         RibbonApplicationMenuEntryPrimary Open = new RibbonApplicationMenuEntryPrimary(
-                new document_print(), "open", new ActionListener() {
+                new document_print(), "Settings", new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+
                         System.out.println("Invoked printing document");
                     }
                 }, JCommandButton.CommandButtonKind.ACTION_AND_POPUP_MAIN_ACTION);
@@ -277,6 +323,33 @@ JCommandButton button1, button2;
         Saveas.addSecondaryMenuGroup("save and print the document",
                 lect, efault, review);
 //application menu footer
+        RibbonApplicationMenuEntryFooter otheruser = new RibbonApplicationMenuEntryFooter(getResizableIconFromResource("images/logout.png"), "Login as Another User", new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                int p = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_CANCEL_OPTION);
+                if (p == 0) {
+                    try {
+                        String sqql = "Update user set Status='no' where USER_ID='" + me + "'";
+                        String sqqll = "Update user_log set Status='Logged out' where  USER_ID='" + me + "'";
+                        Statement stm = con.createStatement();
+                        stm.executeUpdate(sqql);
+                        Statement stmm = con.createStatement();
+                        stmm.executeUpdate(sqqll);
+                  //close();
+
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(null, e);
+                    }
+
+                }
+                Login l = new Login();
+                l.setVisible(true);
+                dispose();
+//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+
         RibbonApplicationMenuEntryFooter footer = new RibbonApplicationMenuEntryFooter(getResizableIconFromResource("images/logout.png"), "Logout", new ActionListener() {
 
             @Override
@@ -284,9 +357,13 @@ JCommandButton button1, button2;
                 int p = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_CANCEL_OPTION);
                 if (p == 0) {
                     try {
-                        String sqql = "Update user set Status='no' where USER_ID='"+me+"'";
+                        String sqql = "Update user set Status='no' where USER_ID='" + me + "'";
+                        String sqqll = "Update user_log set Status='Logged out' where  USER_ID='" + me + "'";
                         Statement stm = con.createStatement();
                         stm.executeUpdate(sqql);
+                        Statement stmm = con.createStatement();
+                        stmm.executeUpdate(sqqll);
+
                     } catch (Exception e) {
                         JOptionPane.showMessageDialog(null, e);
                     }
@@ -294,31 +371,33 @@ JCommandButton button1, button2;
                 }
             }
         });
-    //END OF APPLICATION MENU
+        //END OF APPLICATION MENU
 
-        JRibbonBand band1 = new JRibbonBand("Reception ", null);
+//reception
+        JRibbonBand Reception = new JRibbonBand("Reception ", null);
+        Receptionbutton = new JCommandButton(" New Patient Admission", getResizableIconFromResource("images/addicon.png"));
+        RichTooltip newpatientadd = new RichTooltip();
+        newpatientadd.setTitle("New Patient Admission");
+        newpatientadd.addDescriptionSection("Click on this button  to add a new patient....");
+        newpatientadd.addFooterSection("Press F1 for help");
 
-        button1 = new JCommandButton(" New Patient Admission", getResizableIconFromResource("images/addicon.png"));
-        RichTooltip newpatient = new RichTooltip();
-        newpatient.setTitle("New Patient Admission");
-        newpatient.addDescriptionSection("Click on this button  to add a new patient....");
-        newpatient.addFooterSection("Press F1 for help");
-        button1.setActionRichTooltip(newpatient);
-        button1.addActionListener(new ActionListener() {
-        
+        Receptionbutton.setActionRichTooltip(newpatientadd);
+        Receptionbutton.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent ae) {
                 newpatient();
+
             }
         });
 
-        button2 = new JCommandButton("Patient Records", getResizableIconFromResource("images/patientrecords.png"));
+        PatientRButton = new JCommandButton("Patient Records",getResizableIconFromResource("images/Patientrecords.png"));
         RichTooltip patientrecord = new RichTooltip();
         patientrecord.setTitle("Patient Records");
         patientrecord.addDescriptionSection("Click on this button to view the patient records....");
         patientrecord.addFooterSection("Press F1 for help");
-        button2.setActionRichTooltip(patientrecord);
-        button2.addActionListener(new ActionListener() {
+        PatientRButton.setActionRichTooltip(patientrecord);
+        PatientRButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -327,13 +406,13 @@ JCommandButton button1, button2;
                 // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        JCommandButton button3 = new JCommandButton("Search Patient", getResizableIconFromResource("images/patient-search-icon.png"));
+        SearchPButton = new JCommandButton("Search Patient", getResizableIconFromResource("images/patient-search-icon.png"));
         RichTooltip searchpatient = new RichTooltip();
         searchpatient.setTitle("Search Patient");
         searchpatient.addDescriptionSection("Click on this button to search a patient using the Patient ID......");
         searchpatient.addFooterSection("Press F1 for help");
-        button3.setActionRichTooltip(searchpatient);
-        button3.addActionListener(new ActionListener() {
+        SearchPButton.setActionRichTooltip(searchpatient);
+        SearchPButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -341,13 +420,15 @@ JCommandButton button1, button2;
                 //   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        JCommandButton button4 = new JCommandButton("Assign Doctor", getResizableIconFromResource("images/doctor-icon.png"));
+        //doctor assign
+        DoctorAssignbtn = new JCommandButton("Assign Doctor", getResizableIconFromResource("images/doctor-icon.png"));
         RichTooltip assigndoctor = new RichTooltip();
         assigndoctor.setTitle("Assign Doctor");
         assigndoctor.addDescriptionSection("Click on this button  to assign a patient to a doctor....");
         assigndoctor.addFooterSection("Press F1 for help");
-        button4.setActionRichTooltip(newpatient);
-        button4.addActionListener(new ActionListener() {
+        DoctorAssignbtn.setActionRichTooltip(assigndoctor);
+
+        DoctorAssignbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -356,20 +437,20 @@ JCommandButton button1, button2;
                 //   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        band1.addCommandButton(button1, TOP);
-        band1.addCommandButton(button2, MEDIUM);
-        band1.addCommandButton(button3, MEDIUM);
-        band1.addCommandButton(button4, MEDIUM);
-        band1.setResizePolicies((List) Arrays.asList(new CoreRibbonResizePolicies.None(band1.getControlPanel()),
-                new IconRibbonBandResizePolicy(band1.getControlPanel())));
-        RibbonTask task1 = new RibbonTask("Reception", band1);
+        Reception.addCommandButton(Receptionbutton, TOP);
+        Reception.addCommandButton(PatientRButton, MEDIUM);
+        Reception.addCommandButton(SearchPButton, MEDIUM);
+        // Reception.addCommandButton(DoctorAssignbtn, MEDIUM);
+        Reception.setResizePolicies((List) Arrays.asList(new CoreRibbonResizePolicies.None(Reception.getControlPanel()),
+                new IconRibbonBandResizePolicy(Reception.getControlPanel())));
+        RibbonTask recep = new RibbonTask("Reception", Reception);
         /**
          * ........................................*
          */
-
-        JRibbonBand band3 = new JRibbonBand("Doctors Module", null);
-        JCommandButton button9 = new JCommandButton("Observation", getResizableIconFromResource("images/stethoscope.png"));
-        button9.addActionListener(new ActionListener() {
+///Doctors module
+        JRibbonBand Doctor = new JRibbonBand("Doctors Module", null);
+        observationbtn = new JCommandButton("Observation", getResizableIconFromResource("images/stethoscope.png"));
+        observationbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -377,8 +458,16 @@ JCommandButton button1, button2;
                 prediagnosis();
             }
         });
-        JCommandButton button10 = new JCommandButton("Diagnosis", getResizableIconFromResource("images/Stethoscope-icon.png"));
-        button10.addActionListener(new ActionListener() {
+        consultationbtn = new JCommandButton("Consultation", getResizableIconFromResource("images/people-icon.png"));
+        consultationbtn.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Consultation(); //     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+        Diagnosisbtn = new JCommandButton("Diagnosis", getResizableIconFromResource("images/Stethoscope-icon.png"));
+        Diagnosisbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -386,8 +475,8 @@ JCommandButton button1, button2;
                 // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        JCommandButton button11 = new JCommandButton("Prescription", getResizableIconFromResource("images/prescription.png"));
-        button11.addActionListener(new ActionListener() {
+        Prescriptionbtn = new JCommandButton("Prescription", getResizableIconFromResource("images/prescription.png"));
+        Prescriptionbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -395,157 +484,237 @@ JCommandButton button1, button2;
                 prescriptions();
             }
         });
-        JCommandButton button12 = new JCommandButton("Patient History", getResizableIconFromResource("images/man-icon.png"));
-        button12.addActionListener(new ActionListener() {
+        PatientHistbtn = new JCommandButton("Patient History", getResizableIconFromResource("images/man-icon.png"));
+        PatientHistbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Patienthisto();//  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        JCommandButton dfollowup = new JCommandButton("Panient Follow_up", getResizableIconFromResource("images/patient-follow.png"));
-        dfollowup.addActionListener(new ActionListener() {
+        PatientFollbtn = new JCommandButton("Injection Follow_up", getResizableIconFromResource("images/syringe-icon.png"));
+        PatientFollbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
                 pfollowup();  //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        band3.addCommandButton(button9, TOP);
-        band3.addCommandButton(button10, MEDIUM);
-        band3.addCommandButton(button11, MEDIUM);
-        band3.addCommandButton(button12, MEDIUM);
-        band3.addCommandButton(dfollowup, MEDIUM);
-        band3.setResizePolicies((List) Arrays.asList(new CoreRibbonResizePolicies.None(band3.getControlPanel()),
-                new IconRibbonBandResizePolicy(band3.getControlPanel())));
-        RibbonTask task3 = new RibbonTask("Doctors Module", band3);
+        Doctor.addCommandButton(observationbtn, TOP);
+        Doctor.addCommandButton(consultationbtn, MEDIUM);
+        Doctor.addCommandButton(Diagnosisbtn, MEDIUM);
+        Doctor.addCommandButton(Prescriptionbtn, MEDIUM);
+        Doctor.addCommandButton(PatientHistbtn, MEDIUM);
+        Doctor.addCommandButton(PatientFollbtn, MEDIUM);
+        Doctor.setResizePolicies((List) Arrays.asList(new CoreRibbonResizePolicies.None(Doctor.getControlPanel()),
+                new IconRibbonBandResizePolicy(Doctor.getControlPanel())));
+        RibbonTask doc = new RibbonTask("Doctors Module", Doctor);
 
-        JRibbonBand band4 = new JRibbonBand("Lab & Exam", null);
-        JCommandButton button13 = new JCommandButton("Lab Prescription", null);
-        button13.addActionListener(new ActionListener() {
+        //lab&exam
+        JRibbonBand Lab = new JRibbonBand("Lab & Exam", null);
+        Labpresbtn = new JCommandButton("Lab Prescription", getResizableIconFromResource("images/tube-icon.png"));
+        Labpresbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
                 LabPresc();//  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        JCommandButton button14 = new JCommandButton("Lab History", null);
-        button14.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                Labhistory();//   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        });
-        JCommandButton button15 = new JCommandButton("Blood Test", getResizableIconFromResource("images/Test-icon.png"));
-        button15.addActionListener(new ActionListener() {
+        Bloodtstbtn = new JCommandButton("Blood Test", getResizableIconFromResource("images/Test-iconn.png"));
+        Bloodtstbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Bloodtest();//   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        JCommandButton button16 = new JCommandButton("Stool Test", null);
-        button16.addActionListener(new ActionListener() {
+        othertstbtn = new JCommandButton("Other Test", getResizableIconFromResource("images/other-test-icon.png"));
+        othertstbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
-                Stooltest(); //      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                Othertest(); //      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        band4.addCommandButton(button13, TOP);
-        band4.addCommandButton(button14, MEDIUM);
-        band4.addCommandButton(button15, MEDIUM);
 
-        band4.addCommandButton(button16, MEDIUM);
-
-        band4.setResizePolicies((List) Arrays.asList(new CoreRibbonResizePolicies.None(band4.getControlPanel()),
-                new IconRibbonBandResizePolicy(band4.getControlPanel())));
-        RibbonTask task4 = new RibbonTask("Lab & Exam", band4);
-
-        JRibbonBand band5 = new JRibbonBand("Billing", null);
-        JCommandButton button17 = new JCommandButton("P", null);
-        button17.addActionListener(new ActionListener() {
+        labhistbtn = new JCommandButton("Lab History", getResizableIconFromResource("images/History-icon.png"));
+        labhistbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
+                labhisto();
+            }
+        });
+
+        labtstbtn = new JCommandButton("Lab Tests", getResizableIconFromResource("images/Test-icon.png"));
+        labtstbtn.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                labtests();
+            }
+        });
+
+        Lab.addCommandButton(Labpresbtn, TOP);
+
+        Lab.addCommandButton(Bloodtstbtn, MEDIUM);
+
+        Lab.addCommandButton(othertstbtn, MEDIUM);
+        Lab.addCommandButton(labhistbtn, MEDIUM);
+        Lab.addCommandButton(labtstbtn, MEDIUM);
+
+        Lab.setResizePolicies((List) Arrays.asList(new CoreRibbonResizePolicies.None(Lab.getControlPanel()),
+                new IconRibbonBandResizePolicy(Lab.getControlPanel())));
+        RibbonTask laboratory = new RibbonTask("Lab & Exam", Lab);
+
+        ///pharmacy
+        JRibbonBand Pharmacy = new JRibbonBand("Pharmacy", null);
+        Patientdrugbtn = new JCommandButton("Patient Drugs", getResizableIconFromResource("images/pill-icon.png"));
+        Patientdrugbtn.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                PatientDrug();//  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+        druglstbtn = new JCommandButton("Drug List", getResizableIconFromResource("images/medical-icon.png"));
+        druglstbtn.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                druglist();//   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+
+        Pharmacy.addCommandButton(Patientdrugbtn, TOP);
+        Pharmacy.addCommandButton(druglstbtn, MEDIUM);
+
+        Pharmacy.setResizePolicies((List) Arrays.asList(new CoreRibbonResizePolicies.None(Pharmacy.getControlPanel()),
+                new IconRibbonBandResizePolicy(Pharmacy.getControlPanel())));
+        RibbonTask pharma = new RibbonTask("Pharmacy", Pharmacy);
+
+        ///billing
+        JRibbonBand Billing = new JRibbonBand("Billing", null);
+        billdashbbtn = new JCommandButton("Dash Board", getResizableIconFromResource("images/dashboard-icon.png"));
+        billdashbbtn.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Dashboard();
                 //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        JCommandButton button18 = new JCommandButton("L", null);
-        button18.addActionListener(new ActionListener() {
+        patientbillbtn = new JCommandButton("Patient", getResizableIconFromResource("images/Patient-icon.png"));
+        patientbillbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
-                //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        });
-        JCommandButton button19 = new JCommandButton("g", null);
+                patientbill();
+            }               // PatientReceipt();   //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
-        button19.addActionListener(new ActionListener() {
+        });
+
+//        invoicesbtn = new JCommandButton("Invoices", getResizableIconFromResource("images/Medical-invoice-icon.png"));
+//        invoicesbtn.addActionListener(new ActionListener() {
+//
+//            @Override
+//            public void actionPerformed(ActionEvent ae) {
+//                invoice(); // PatientReceipt();// throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//            }
+//        });
+        paymentsbtn = new JCommandButton("Payments", getResizableIconFromResource("images/pay-icon.png"));
+        paymentsbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
-
-                //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                payment();  // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        JCommandButton button20 = new JCommandButton("Star", null);
-        button20.addActionListener(new ActionListener() {
+        receiptsbtn = new JCommandButton("Receipts", getResizableIconFromResource("images/Bill-icon.png"));
+        receiptsbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
-                // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                receipt();   //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        band5.addCommandButton(button17, TOP);
-        band5.addCommandButton(button18, MEDIUM);
-        band5.addCommandButton(button19, MEDIUM);
-        band5.addCommandButton(button20, MEDIUM);
+        Billing.addCommandButton(billdashbbtn, TOP);
+        Billing.addCommandButton(patientbillbtn, MEDIUM);
+        // Billing.addCommandButton(invoicesbtn, MEDIUM);
+        Billing.addCommandButton(paymentsbtn, MEDIUM);
+        Billing.addCommandButton(receiptsbtn, MEDIUM);
 
-        band5.setResizePolicies((List) Arrays.asList(new CoreRibbonResizePolicies.None(band5.getControlPanel()),
-                new IconRibbonBandResizePolicy(band5.getControlPanel())));
-        RibbonTask task5 = new RibbonTask("Billing", band5);
+        Billing.setResizePolicies((List) Arrays.asList(new CoreRibbonResizePolicies.None(Billing.getControlPanel()),
+                new IconRibbonBandResizePolicy(Billing.getControlPanel())));
+        RibbonTask bill = new RibbonTask("Billing", Billing);
 
-        JRibbonBand band6 = new JRibbonBand("Reports", null);
-        JCommandButton button21 = new JCommandButton("Patient", getResizableIconFromResource("images/patient-reports-icon.png"));
-        button21.addActionListener(new ActionListener() {
+        //reports
+        JRibbonBand Report = new JRibbonBand("Reports", null);
+        patientAdmtnrbtn = new JCommandButton("Patient Admissions", getResizableIconFromResource("images/patient-reports-icon.png"));
+        patientAdmtnrbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Preport();//  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        JCommandButton button22 = new JCommandButton("Lab", getResizableIconFromResource("images/Lab-report-icon.png"));
-        button22.addActionListener(new ActionListener() {
+
+        patienttstrbtn = new JCommandButton("Patient Tests", getResizableIconFromResource("images/Test-icon.png"));
+        patienttstrbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
-                Lreport();//  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                TestsReport();//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        JCommandButton button23 = new JCommandButton("Billing", getResizableIconFromResource("images/billing-report-icon.png"));
-        button23.addActionListener(new ActionListener() {
+        patientbillrbtn = new JCommandButton("Patient Bill", getResizableIconFromResource("images/pay-icon.png"));
+        patientbillrbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Breport();//  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        JCommandButton button24 = new JCommandButton("Star", null);
+        druglistbtn = new JCommandButton("Drug List", getResizableIconFromResource("images/medical-icon.png"));
+        druglistbtn.addActionListener(new ActionListener() {
 
-        band6.addCommandButton(button21, TOP);
-        band6.addCommandButton(button22, MEDIUM);
-        band6.addCommandButton(button23, MEDIUM);
-        band6.addCommandButton(button24, MEDIUM);
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                DrugListRepo();//   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+        labtstsrbtn = new JCommandButton("Lab Tests", getResizableIconFromResource("images/Lab-report-icon.png"));
+        labtstsrbtn.addActionListener(new ActionListener() {
 
-        band6.setResizePolicies((List) Arrays.asList(new CoreRibbonResizePolicies.None(band6.getControlPanel()),
-                new IconRibbonBandResizePolicy(band6.getControlPanel())));
-        RibbonTask task6 = new RibbonTask("Reports", band6);
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Lreport();//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+        userlogrbtn = new JCommandButton("Users Log", getResizableIconFromResource("images/log-icon.png"));
+        userlogrbtn.addActionListener(new ActionListener() {
 
-        JRibbonBand band2 = new JRibbonBand("Admin", null);
-        JCommandButton button5 = new JCommandButton("Add User", getResizableIconFromResource("images/adduser-icon.png"));
-        button5.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                userlog();// throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+        Report.addCommandButton(patientAdmtnrbtn, TOP);
+        Report.addCommandButton(patienttstrbtn, MEDIUM);
+       // Report.addCommandButton(patientbillrbtn, MEDIUM);
+
+        Report.addCommandButton(labtstsrbtn, MEDIUM);
+        Report.addCommandButton(druglistbtn, MEDIUM);
+        Report.addCommandButton(userlogrbtn, MEDIUM);
+
+        Report.setResizePolicies((List) Arrays.asList(new CoreRibbonResizePolicies.None(Report.getControlPanel()),
+                new IconRibbonBandResizePolicy(Report.getControlPanel())));
+        RibbonTask repor = new RibbonTask("Reports", Report);
+
+        //Admin
+        JRibbonBand Admin = new JRibbonBand("Admin", null);
+        adduserbtn = new JCommandButton("Add User", getResizableIconFromResource("images/adduser-icon.png"));
+        adduserbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -553,320 +722,1079 @@ JCommandButton button1, button2;
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        JCommandButton button6 = new JCommandButton("Edit User", getResizableIconFromResource("images/Edit-Users-icon.png"));
-        button6.addActionListener(new ActionListener() {
+        edituserbtn = new JCommandButton("Edit User", getResizableIconFromResource("images/Edit-Users-icon.png"));
+        edituserbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Edituser();//  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        JCommandButton button7 = new JCommandButton("Delete User", getResizableIconFromResource("images/deleteuser-icon.png"));
-        button7.addActionListener(new ActionListener() {
+        deluserbtn = new JCommandButton("Delete User", getResizableIconFromResource("images/deleteuser-icon.png"));
+        deluserbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Deleteuser();//       throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        JCommandButton button8 = new JCommandButton("View Users", getResizableIconFromResource("images/view-users.png"));
-        button8.addActionListener(new ActionListener() {
+        viewuserbtn = new JCommandButton("View Users", getResizableIconFromResource("images/view-users.png"));
+        viewuserbtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
                 ViewUser();    // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        JCommandButton backup=new JCommandButton("Back Up",getResizableIconFromResource("images/download-icon.png"));
-                backup.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-             Backup();
-             //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        });
-        JCommandButton add = new JCommandButton("ADD", null);
-        add.addActionListener(new ActionListener() {
+        testpricebtn = new JCommandButton("Test Price", getResizableIconFromResource("images/Testcode-icon.png"));
+        testpricebtn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
                 AdminAdd();  //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        band2.addCommandButton(button5, TOP);
-        band2.addCommandButton(button8, MEDIUM);
-        band2.addCommandButton(button6, MEDIUM);
-        band2.addCommandButton(button7, MEDIUM);
-        band2.addCommandButton(add, MEDIUM);
-        band2.addCommandButton(backup, MEDIUM);
+        backupbtn = new JCommandButton("Back Up", getResizableIconFromResource("images/download-icon.png"));
+        backupbtn.addActionListener(new ActionListener() {
 
-        band2.setResizePolicies((List) Arrays.asList(new CoreRibbonResizePolicies.None(band2.getControlPanel()),
-                new IconRibbonBandResizePolicy(band2.getControlPanel())));
-        RibbonTask task2 = new RibbonTask("Admin", band2);
- //help
-//appIcon=getResizableIconFromResource("Help-icon.png");
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Backup();
+                //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+
+        Admin.addCommandButton(adduserbtn, TOP);
+        //  Admin.addCommandButton(edituserbtn, MEDIUM);
+        Admin.addCommandButton(deluserbtn, MEDIUM);
+        Admin.addCommandButton(viewuserbtn, MEDIUM);
+        Admin.addCommandButton(testpricebtn, MEDIUM);
+        Admin.addCommandButton(backupbtn, MEDIUM);
+
+        Admin.setResizePolicies((List) Arrays.asList(new CoreRibbonResizePolicies.None(Admin.getControlPanel()),
+                new IconRibbonBandResizePolicy(Admin.getControlPanel())));
+        RibbonTask admin = new RibbonTask("Admin", Admin);
+        //help
 
         RibbonApplicationMenu bb = new RibbonApplicationMenu();
+
         bb.addMenuSeparator();
-        bb.addMenuEntry(amEntryPrint);
-        bb.addMenuEntry(save);
-        bb.addMenuEntry(Open);
-        bb.addMenuEntry(Saveas);
+       // bb.addMenuEntry(amEntryPrint);
+        //   bb.addMenuEntry(save);
+        //    bb.addMenuEntry(Open);
+        //   bb.addMenuEntry(Saveas);
+        bb.addFooterEntry(otheruser);
         bb.addFooterEntry(footer);
 
         getRibbon().setApplicationMenu(bb);
-        //getRibbon().addTaskbarComponent();
+
+        //getRibbon().add(PROPERTY_APPLICATION_ICON);
+        //Taskbar
+        FlowLayout g = new FlowLayout(FlowLayout.CENTER, 5, 0);
+
+        JPanel up = new JPanel(g);
+        up.setOpaque(false);
+        JCommandButton settings = new JCommandButton(null, getSmallIconFromResource("images/control-panel-icon.png"));
+        RichTooltip sett = new RichTooltip();
+        sett.setTitle("Settings");
+        sett.addDescriptionSection("Click on this button to open settings dialogue");
+        sett.addFooterSection("Press F1 for help");
+        settings.setActionRichTooltip(sett);
+        settings.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Settings();// throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+        JCommandButton ings = new JCommandButton(null, getSmallIconFromResource("images/control-panel-icon.png"));
+        RichTooltip in = new RichTooltip();
+        in.setTitle("Settings");
+        in.addDescriptionSection("Click on this button to open settings dialogue");
+        in.addFooterSection("Press F1 for help");
+        ings.setActionRichTooltip(sett);
+        ings.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Settings();// throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+        up.add(settings);
+        up.add(ings);
+        getRibbon().addTaskbarComponent(settings);
+
+        //end of taskbar
         getRibbon().configureHelp(getResizableIconFromResource("images/Help-icon.png"), new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
-               Saidia();
+                Saidia();
 
 //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        getRibbon().addTask(task1);
-        getRibbon().addTask(task3);
-        getRibbon().addTask(task4);
-        getRibbon().addTask(task5);
-        getRibbon().addTask(task6);
-        getRibbon().addTask(task2);
-
-       //getRibbon().addTaskbarComponent(this);
-        
-       
+        getRibbon().addTask(recep);
+        getRibbon().addTask(doc);
+        getRibbon().addTask(laboratory);
+        getRibbon().addTask(pharma);
+        getRibbon().addTask(bill);
+        getRibbon().addTask(repor);
+        getRibbon().addTask(admin);
+        // getRibbon().addTaskbarComponent(comp);
         /////container
+        //end jribbon
         BorderLayout container = new BorderLayout();
         desktop = new JDesktopPane();
+        // desktop.setBackground(Color.DARK_GRAY);
         desktop.setLayout(container);
         getContentPane().add(desktop);
-//Top panel component
-        JPanel toppanel = new JPanel();
-        desktop.add(toppanel, BorderLayout.PAGE_START);
 
 //Make the center component big, since that's the
 //typical usage of BorderLayout.
-        centerpanel = new JPanel();
-        desktop.add(centerpanel, BorderLayout.CENTER); 
-       //left panel component
-        leftpanel = new JPanel();
-        leftpanel.setBorder(BorderFactory.createTitledBorder("Hospital Information"));
-         leftpanel.add(new JLabel("Field 1"));
-        leftpanel.add(new JTextField(10));
-        leftpanel.setBackground(Color.LIGHT_GRAY);
-        desktop.add(leftpanel, BorderLayout.LINE_START);
-       
-        // footer component
-        
-        JPanel foot = new JPanel();
-        foot.setBackground(Color.LIGHT_GRAY);
-        logdetail=new JLabel();
-        time = new JLabel();
-        date = new JLabel();
-        JLabel space = new JLabel("                                                                                                                                                              ");
-        foot.add(logdetail);
-        foot.add(time);
-        foot.add(space);
-        foot.add(date);
-        desktop.add(foot, BorderLayout.PAGE_END);
-                
-        //Right component
+        centerpanel = new JTabbedPane();
+        desktop.add(centerpanel, BorderLayout.CENTER);
+        centerpanel.addTab(null, null);
+        centerpanel.addTab(null, null);
+
+//right panel
         rightpanel = new JPanel();
+
+        pnlTools = createToolsPanel();
+
+        JPanel contentPane = new JPanel();
+        contentPane.setLayout(new BorderLayout());
+        contentPane.setOpaque(true);
+        clickbutton = new JButton();
+        //  clickbutton.setOpaque(false);
+        clickbutton.setIcon(getResizableIconFromResource("images/Get-Info-icon.png"));
+        clickbutton.setBorder(null);
+        // clickbutton.setFocusable(false);
+        clickbutton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                boolean visible = pnlTools.isVisible();
+                pnlTools.setVisible(!visible);
+
+            }
+
+        });
+        contentPane.add(clickbutton, BorderLayout.NORTH);
+        contentPane.add(pnlTools, BorderLayout.EAST);
+
+        pnlTools.setVisible(false);
+
+        rightpanel.add(contentPane);
         desktop.add(rightpanel, BorderLayout.LINE_END);
-    }
 
-    //Methods
+        JPanel left = new JPanel();
+        HospitalInfo hf = new HospitalInfo();
+        hf.setVisible(true);
+        left.add(hf);
+        desktop.add(left, BorderLayout.LINE_START);
+
+        // footer component
+        BorderLayout footage=new BorderLayout();
+        JPanel foot = new JPanel(footage);
+        foot.setBackground(Color.LIGHT_GRAY);
+        logdetail = new JLabel();
+        logdetail.setIcon(getSmallIconFromResource("images/user-icon.png"));
+        time = new JLabel();
+        time.setIcon(getSmallIconFromResource("images/clock-icon.png"));
+        date = new JLabel();
+        date.setIcon(getSmallIconFromResource("images/calendar-icon.png"));
     
-    //Login method
-  public void loggedin() {
-    String sql="select * from user where USER_ID='"+me+"'";
-    try {
-        pst=con.prepareStatement(sql);
-          rs=pst.executeQuery( );
-           if(rs.next()){
-                String utitle=rs.getString("TITLE");
-                String ufname=rs.getString("FIRST_NAME");
-                 String ulname=rs.getString("LAST_NAME");
-                logdetail.setText(utitle+" "+ufname+" "+ulname+"                                                                                                                                                                                      ");
-           }        
-    } catch (SQLException ex) {
-     JOptionPane.showMessageDialog(null, ex); 
-     // Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
-    }    
-   
-    } 
-  
-  public void hosiinfo() {
-   HospitalInfo hinfo = new HospitalInfo();
-       leftpanel.add(hinfo);
-        hinfo.setVisible(true);
-    }
-    public void patientrecord() {
-        Patientrecords leff = new Patientrecords();
-        centerpanel.add(leff);
-        leff.setVisible(true);
+        foot.add(logdetail,BorderLayout.LINE_START);
+        foot.add(time,BorderLayout.CENTER);
+     
+        foot.add(date,BorderLayout.LINE_END);
+
+        desktop.add(foot, BorderLayout.PAGE_END);
+
     }
 
-    public void patientdetail() {
-        Patientdetail leffh = new Patientdetail();
-        rightpanel.add(leffh);
-        leffh.setVisible(true);
+    private void addClosableTab(final JTabbedPane centerpanel, final JComponent c, final String title,
+            final Icon icon) {
+
+        // Add the tab to the pane without any label
+        centerpanel.addTab(null, c);
+        //int pos=0;
+        int pos = centerpanel.indexOfComponent(c);
+
+        // Create a FlowLayout that will space things 5px apart
+        FlowLayout f = new FlowLayout(FlowLayout.CENTER, 5, 0);
+
+        // Make a small JPanel with the layout and make it non-opaque
+        JPanel pnlTab = new JPanel(f);
+        pnlTab.setOpaque(false);
+
+        // Add a JLabel with title and the left-side tab icon
+        JLabel lblTitle = new JLabel("title");
+        lblTitle.setIcon(icon);
+
+        // Create a JButton for the close tab button
+        JButton btnClose = new JButton(getSmallIconFromResource("images/exit-icon.png"));
+        btnClose.setOpaque(false);
+
+        // Configure icon and rollover icon for button
+        // btnClose.setRolloverIcon(CLOSE_TAB_ICON);
+        btnClose.setRolloverEnabled(true);
+        // btnClose.setIcon(RGBGrayFilter.getDisabledIcon(btnClose, CLOSE_TAB_ICON));
+
+        // Set border null so the button doesn't make the tab too big
+        btnClose.setBorder(null);
+
+        // Make sure the button can't get focus, otherwise it looks funny
+        btnClose.setFocusable(false);
+
+        // Put the panel together
+        pnlTab.add(lblTitle);
+        pnlTab.add(btnClose);
+
+        // Add a thin border to keep the image below the top edge of the tab
+        // when the tab is selected
+        pnlTab.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
+
+        // Now assign the component for the tab
+        centerpanel.setTabComponentAt(pos, pnlTab);
+
+        // Add the listener that removes the tab
+        ActionListener listener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // The component parameter must be declared "final" so that it can be
+                // referenced in the anonymous listener class like this.
+                //   System.out.println(centerpanel.indexOfComponent(c));
+
+                centerpanel.remove(c);
+
+            }
+        };
+        btnClose.addActionListener(listener);
+
+        // Optionally bring the new tab to the front
+        centerpanel.setSelectedComponent(c);
+
+        //-------------------------------------------------------------
+        // Bonus: Adding a <Ctrl-W> keystroke binding to close the tab
+        //-------------------------------------------------------------
+        AbstractAction closeTabAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                centerpanel.remove(c);
+            }
+        };
+
+        // Create a keystroke
+        KeyStroke controlW = KeyStroke.getKeyStroke("control W");
+
+        // Get the appropriate input map using the JComponent constants.
+        // This one works well when the component is a container. 
+        InputMap inputMap = c.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        // Add the key binding for the keystroke to the action name
+        inputMap.put(controlW, "closeTab");
+
+        // Now add a single binding for the action name to the anonymous action
+        c.getActionMap().put("closeTab", closeTabAction);
+
+//////  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+//Methods
+//
+//    public synchronized void  addTaskbarComponent(Component comp) {
+// 		if (comp instanceof AbstractCommandButton) {
+//			AbstractCommandButton button = (AbstractCommandButton) comp;
+//			button.setDisplayState(CommandButtonDisplayState.SMALL);
+// 			button.setGapScaleFactor(0.5); 			button.setFocusable(false);
+// 		}
+//		taskbarComponents.add(comp);
+//		fireStateChanged();
+// 	}
+    private JPanel createToolsPanel() {
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(0, 1));
+        panel.setBounds(10, 20, 700, 300);
+        panel.setBackground(Color.LIGHT_GRAY);
+        Border b1 = BorderFactory.createTitledBorder("MARTMERG MEDICAL CLINIC");
+        Border b2 = BorderFactory.createLineBorder(Color.BLUE, 2);
+        panel.setBorder(BorderFactory.createCompoundBorder(b2, b1));
+        // hosii = new ImageIcon("/images/Hospital-icon .png");
+        hosi = new JLabel();
+        hosi.setIcon(getResizableIconFromResource("images/Hospital-icon .png"));
+        user = new JLabel();
+
+        jarea = new JTextArea();
+
+        panel.add(hosi);
+        panel.add(user);
+        //  panel.add(jarea);
+
+        return panel;
+    }
+//
+    public void privaleges() {
+
+        if (id == 12) {
+                    //RECEPTION
+
+//doctor
+//                    //rece
+//                    hoomie.Receptionbutton.setEnabled(false);
+//                    hoomie.PatientRButton.setEnabled(false);
+//                    hoomie.SearchPButton.setEnabled(false);
+//                    hoomie.DoctorAssignbtn.setEnabled(false);
+            //doc
+            observationbtn.setEnabled(false);
+            consultationbtn.setEnabled(false);
+            Diagnosisbtn.setEnabled(false);
+            Prescriptionbtn.setEnabled(false);
+            PatientHistbtn.setEnabled(false);
+            PatientFollbtn.setEnabled(false);
+            //lab
+            Labpresbtn.setEnabled(false);
+            Bloodtstbtn.setEnabled(false);
+            othertstbtn.setEnabled(false);
+            labhistbtn.setEnabled(false);
+            labtstbtn.setEnabled(true);
+            //phar
+            Patientdrugbtn.setEnabled(false);
+            druglstbtn.setEnabled(true);
+            //bill
+            billdashbbtn.setEnabled(false);
+            patientbillbtn.setEnabled(false);
+          //  invoicesbtn.setEnabled(false);
+            paymentsbtn.setEnabled(false);
+            receiptsbtn.setEnabled(false);
+            //repo
+            patientAdmtnrbtn.setEnabled(false);
+            patienttstrbtn.setEnabled(false);
+            patientbillrbtn.setEnabled(false);
+            druglistbtn.setEnabled(false);
+            labtstsrbtn.setEnabled(false);
+            userlogrbtn.setEnabled(false);
+            //admin
+            adduserbtn.setEnabled(false);
+            viewuserbtn.setEnabled(true);
+            edituserbtn.setEnabled(false);
+            deluserbtn.setEnabled(false);
+            testpricebtn.setEnabled(false);
+            backupbtn.setEnabled(false);
+        } else if (id == 14) {
+                    //DOCTOR
+
+            //rec
+            Receptionbutton.setEnabled(false);
+            PatientRButton.setEnabled(true);
+            SearchPButton.setEnabled(true);
+            DoctorAssignbtn.setEnabled(false);
+            //lab
+            Labpresbtn.setEnabled(false);
+            Bloodtstbtn.setEnabled(false);
+            othertstbtn.setEnabled(false);
+            labhistbtn.setEnabled(true);
+            labtstbtn.setEnabled(true);
+            //phar
+            Patientdrugbtn.setEnabled(false);
+            druglstbtn.setEnabled(true);
+            //bill
+            billdashbbtn.setEnabled(false);
+            patientbillbtn.setEnabled(false);
+//                   hoomie.invoicesbtn.setEnabled(false);
+            paymentsbtn.setEnabled(false);
+            receiptsbtn.setEnabled(false);
+            //repor
+            patientAdmtnrbtn.setEnabled(false);
+            patienttstrbtn.setEnabled(false);
+            patientbillrbtn.setEnabled(false);
+            druglistbtn.setEnabled(false);
+            labtstsrbtn.setEnabled(false);
+            userlogrbtn.setEnabled(false);
+            //admin
+            adduserbtn.setEnabled(false);
+            viewuserbtn.setEnabled(true);
+            edituserbtn.setEnabled(false);
+            deluserbtn.setEnabled(false);
+            testpricebtn.setEnabled(false);
+            backupbtn.setEnabled(false);
+        } else if (id == 16) {
+                    //LAB TECH  
+
+            //doc
+            observationbtn.setEnabled(false);
+            consultationbtn.setEnabled(false);
+            Diagnosisbtn.setEnabled(false);
+            Prescriptionbtn.setEnabled(false);
+            PatientHistbtn.setEnabled(false);
+            PatientFollbtn.setEnabled(false);
+            //phar
+            Patientdrugbtn.setEnabled(false);
+            druglstbtn.setEnabled(true);
+            //bill
+            billdashbbtn.setEnabled(false);
+            patientbillbtn.setEnabled(false);
+         //   invoicesbtn.setEnabled(false);
+            paymentsbtn.setEnabled(false);
+            receiptsbtn.setEnabled(false);
+            //repo
+            patientAdmtnrbtn.setEnabled(false);
+            patienttstrbtn.setEnabled(false);
+            patientbillrbtn.setEnabled(false);
+            druglistbtn.setEnabled(false);
+            labtstsrbtn.setEnabled(false);
+            userlogrbtn.setEnabled(false);
+            //admin
+            adduserbtn.setEnabled(false);
+            viewuserbtn.setEnabled(true);
+            edituserbtn.setEnabled(false);
+            deluserbtn.setEnabled(false);
+            testpricebtn.setEnabled(false);
+            backupbtn.setEnabled(false);
+        } else if (id == 18) {
+                    //PHARMACIST
+
+            //doc
+            observationbtn.setEnabled(false);
+            consultationbtn.setEnabled(false);
+            Diagnosisbtn.setEnabled(false);
+            Prescriptionbtn.setEnabled(false);
+            PatientHistbtn.setEnabled(false);
+            PatientFollbtn.setEnabled(false);
+            //lab
+            Labpresbtn.setEnabled(false);
+            Bloodtstbtn.setEnabled(false);
+            othertstbtn.setEnabled(false);
+            labhistbtn.setEnabled(false);
+            labtstbtn.setEnabled(true);
+
+            //repo
+            patientAdmtnrbtn.setEnabled(false);
+
+            patienttstrbtn.setEnabled(false);
+            patientbillrbtn.setEnabled(false);
+            druglistbtn.setEnabled(false);
+            labtstsrbtn.setEnabled(false);
+            userlogrbtn.setEnabled(false);
+            //admin
+            adduserbtn.setEnabled(false);
+            viewuserbtn.setEnabled(true);
+            edituserbtn.setEnabled(false);
+            deluserbtn.setEnabled(false);
+            testpricebtn.setEnabled(false);
+            backupbtn.setEnabled(false);
+        } else if (id == 20) {
+                    //ADMIN
+        }
+
+    }
+
+    public void logedin_user() {
+        String sql = "select * from user";
+        try {
+            pst = con.prepareStatement(sql);
+            rs = pst.executeQuery();
+
+            while (rs.next()) {
+
+                ufname = rs.getString("FIRST_NAME");
+                ulname = rs.getString("LAST_NAME");
+
+                jarea.setText("Firstname \t Lastname\n");
+                jarea.append(ufname + "\t" + ulname + "\n");
+                //jarea.append(String.valueOf(rs));
+                //JOptionPane.showMessageDialog(null, rs[1]);
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+            // Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public void loggedin() {
+        String sql = "select * from user where USER_ID='" + me + "'";
+        try {
+            pst = con.prepareStatement(sql);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                String utitle = rs.getString("TITLE");
+                ufname = rs.getString("FIRST_NAME");
+                ulname = rs.getString("LAST_NAME");
+                logdetail.setText(utitle.toUpperCase() + " " + ufname.toUpperCase() + " " + ulname.toUpperCase());
+                user.setText("<html>You are Logged in as:<font color=blue><i>" + ufname + " " + ulname + "</i></font></html>");
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+            // Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public void patientrecord() {
+        centerpanel.removeTabAt(1);
+        Patientrecords precords = new Patientrecords();
+//                .PatientRecordInstance();
+//        if (precords.isVisible()) {
+//            try {
+//                precords.setSelected(true);
+//            } catch (Exception e) {
+//            }
+//            return;
+//
+//        } else {
+        precords.setVisible(true);
+        JScrollPane scrolPane = new JScrollPane(precords);
+        centerpanel.addTab("PATIENT RECORDS", null, scrolPane, null);
+        centerpanel.setSelectedComponent(scrolPane);
+//desktop.add(precords);
+
     }
 
     public void newpatient() {
-        NewPatient df = new NewPatient().NewPatientInstance();
-        if(df.isVisible()){
-           try{
-           df.setSelected(true);
-           }
-           catch(Exception e){
-               
-           }
-           return;
-        }
-        else{
-        centerpanel.add(df);
+        centerpanel.removeTabAt(1);
+        NewPatient df = new NewPatient();
+//           .NewPatientInstance();
+//        if (df.isVisible()) {
+//            try {
+//                df.setSelected(true);
+//            } catch (Exception e) {
+//
+//            }
+//            return;
+//        } else {
         df.setVisible(true);
+        JScrollPane scrolPane = new JScrollPane(df);
+        centerpanel.addTab("NEW PATIENT", null, scrolPane, "Enter new patient");
+//            JScrollPane scrollPane = new JScrollPane(df);
+//           addClosableTab(centerpanel, scrollPane, "Tab ", null);
+        centerpanel.setSelectedComponent(scrolPane);
     }
+
+    public void Settings() {
+        Settings stsi = new Settings(this, rootPaneCheckingEnabled);
+        stsi.setVisible(true);
     }
-public void Saidia(){
-    Help help=new Help(this, rootPaneCheckingEnabled);
-    help.setVisible(true);
-}
+
+    public void Saidia() {
+        Help help = new Help(this, rootPaneCheckingEnabled);
+        help.setVisible(true);
+    }
+
     public void patientsearch() {
-        SearchPatient df = new SearchPatient();
-        if (df.isVisible()) {
-            try {
-                df.setSelected(true);
+        centerpanel.removeTabAt(1);
+        SearchPatient ps = new SearchPatient();
+//                .SearchPatientInstance();
+//        if (ps.isVisible()) {
+//            try {
+//                ps.setSelected(true);
+//
+//            } catch (java.beans.PropertyVetoException ex) {
+//                Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//            return;
+//        } else {
 
-            } catch (java.beans.PropertyVetoException ex) {
-                Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            return;
-        } else {
-            centerpanel.add(df);
-            df.setVisible(true);
-        }
-        try {
-            df.setSelected(true);
+        ps.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(ps);
+        centerpanel.addTab("PATIENT SEARCH", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
 
-        } catch (java.beans.PropertyVetoException ex) {
-            Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     public void assigndoctor() {
-        DoctorAssignment fdf = new DoctorAssignment();
-        centerpanel.add(fdf);
-        fdf.setVisible(true);
+        centerpanel.removeTabAt(1);
+        DoctorAssignment DocAssign = new DoctorAssignment();
+//                .DoctorAssignmentInstance();
+//        if (DocAssign.isVisible()) {
+//            try {
+//                DocAssign.setSelected(true);
+//            } catch (PropertyVetoException e) {
+//
+//            }
+//            return;
+//        } else {
+        DocAssign.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(DocAssign);
+        centerpanel.addTab("ASSIGN DOCTOR", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
+
     }
 
     public void prediagnosis() {
-        PreDiagnostictest tests = new PreDiagnostictest();
-        centerpanel.add(tests);
-        tests.setVisible(true);
+        centerpanel.removeTabAt(1);
+        PreDiagnostictest ptests = new PreDiagnostictest();
+//        .PreDiagTestInstance();
+//        if (ptests.isVisible()) {
+//            try {
+//                ptests.setSelected(true);
+//
+//            } catch (Exception e) {
+//
+//            }
+//            return;
+//        } else {
+        ptests.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(ptests);
+        centerpanel.addTab("OBSERVATION", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
+
+    }
+
+    public void Consultation() {
+        centerpanel.removeTabAt(1);
+        Consultation consul = new Consultation();
+//                .ConsultationInstance();
+//        if (consul.isVisible()) {
+//            try {
+//                consul.setSelected(true);
+//            } catch (Exception e) {
+//            }
+//            return;
+//        } else {
+        consul.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(consul);
+        centerpanel.addTab("CONSULTATION", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
+
+    }
+
+    public void TestsReport() {
+        centerpanel.removeTabAt(1);
+        PtestReport ptrepo = new PtestReport();
+//        if (ptrepo.isVisible()) {
+//            try {
+//                ptrepo.setSelected(true);
+//            } catch (Exception e) {
+//
+//            }
+//            return;
+//        } else {
+
+        ptrepo.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(ptrepo);
+        centerpanel.addTab("TESTS REPORT", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
     }
 
     public void prescriptions() {
+        centerpanel.removeTabAt(1);
         Prescription pres = new Prescription();
-        centerpanel.add(pres);
+//        .PrescriptionInstance();
+//        if (pres.isVisible()) {
+//            try {
+//                pres.setSelected(true);
+//            } catch (Exception e) {
+//
+//            }
+//            return;
+//        } else {
+//           
         pres.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(pres);
+        centerpanel.addTab("PRESCRIPTION", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
     }
 
     public void Adduser() {
+        centerpanel.removeTabAt(1);
         Adduser adduser = new Adduser();
-        centerpanel.add(adduser);
+        //.AdduserInstance();
+//        if (adduser.isVisible()) {
+//            try {
+//                adduser.setSelected(true);
+//            } catch (Exception e) {
+//
+//            }
+//            return;
+//        } else {
+//         
         adduser.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(adduser);
+        centerpanel.addTab("ADD USER", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
+
     }
 
     public void Edituser() {
+        centerpanel.removeTabAt(1);
         Edituser edituser = new Edituser();
-        centerpanel.add(edituser);
+//                .EditUserInstance();
+//        if (edituser.isVisible()) {
+//            try {
+//                edituser.setSelected(true);
+//            } catch (Exception e) {
+//
+//            }
+//            return;
+//        } else {
+//         
         edituser.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(edituser);
+        centerpanel.addTab("EDIT USER", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
     }
 
     public void Deleteuser() {
+        centerpanel.removeTabAt(1);
         Deleteuser deluser = new Deleteuser();
-        centerpanel.add(deluser);
+//        .DeleteUserInstance();
+//        if (deluser.isVisible()) {
+//            try {
+//                deluser.setSelected(true);
+//            } catch (Exception e) {
+//
+//            }
+//            return;
+//        } else {
+//           
         deluser.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(deluser);
+        centerpanel.addTab("DELETE USER", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
     }
 
     public void Patientdiag() {
+        centerpanel.removeTabAt(1);
         PatientDiagnosis pdiag = new PatientDiagnosis();
-        centerpanel.add(pdiag);
+//        .PatientDiagInstance();
+//        if (pdiag.isVisible()) {
+//            try {
+//                pdiag.setSelected(true);
+//            } catch (Exception e) {
+//            }
+//            return;
+//        } else {
+//           
         pdiag.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(pdiag);
+        centerpanel.addTab("DIAGNOSIS", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
     }
 
     public void Patienthisto() {
+        centerpanel.removeTabAt(1);
         PatientHistory phisto = new PatientHistory();
-        centerpanel.add(phisto);
+//        .PatientHisInstance();
+//        if (phisto.isVisible()) {
+//            try {
+//                phisto.setSelected(true);
+//            } catch (Exception e) {
+//
+//            }
+//            return;
+//        } else {
+//           
         phisto.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(phisto);
+        centerpanel.addTab("PATIENT HISTORY", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
+    }
+
+    public void DrugListRepo() {
+        centerpanel.removeTabAt(1);
+        DrugListReport drugli = new DrugListReport();
+//        .PatientHisInstance();
+//        if (phisto.isVisible()) {
+//            try {
+//                phisto.setSelected(true);
+//            } catch (Exception e) {
+//
+//            }
+//            return;
+//        } else {
+//           
+        drugli.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(drugli);
+        centerpanel.addTab("DRUGS LIST", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
     }
 
     public void ViewUser() {
+        centerpanel.removeTabAt(1);
         Viewusers viewuser = new Viewusers();
-        centerpanel.add(viewuser);
+//        .ViewUsersInstance();
+//        if (viewuser.isVisible()) {
+//            try {
+//                viewuser.setSelected(true);
+//            } catch (Exception e) {
+//
+//            }
+//            return;
+//        } else {
+//           
         viewuser.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(viewuser);
+        centerpanel.addTab("VIEW USERS", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
+    }
+
+    public void druglist() {
+
+        centerpanel.removeTabAt(1);
+        DrugList draglist = new DrugList();
+        if (draglist.isVisible()) {
+            try {
+                draglist.setSelected(true);
+            } catch (Exception e) {
+
+            }
+            return;
+        } else {
+
+            draglist.setVisible(true);
+            JScrollPane sscrolPane = new JScrollPane(draglist);
+            centerpanel.addTab("DRUG LIST", null, sscrolPane, null);
+            centerpanel.setSelectedComponent(sscrolPane);
+        }
     }
 
     public void Bloodtest() {
+        centerpanel.removeTabAt(1);
         BloodTest btest = new BloodTest();
-        centerpanel.add(btest);
+
         btest.setVisible(true);
+
+        JScrollPane sscrolPane = new JScrollPane(btest);
+        centerpanel.addTab("BLOOD TEST", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
     }
 
-    public void Stooltest() {
-        StoolTest STtest = new StoolTest();
-        centerpanel.add(STtest);
+    public void Othertest() {
+        centerpanel.removeTabAt(1);
+        OtherTests STtest = new OtherTests();
+
         STtest.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(STtest);
+        centerpanel.addTab("OTHER TESTS", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
+    }
+
+    public void labhisto() {
+        centerpanel.removeTabAt(1);
+        labHistory lbh = new labHistory();
+
+        lbh.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(lbh);
+        centerpanel.addTab("LAB HISTORY", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
     }
 
     public void LabPresc() {
-        LabPres labp = new LabPres();
-        centerpanel.add(labp);
-        labp.setVisible(true);
-    }
+        centerpanel.removeTabAt(1);
+        LabPres labp = new LabPres().LabPresInstance();
+        if (labp.isVisible()) {
+            try {
+                labp.setSelected(true);
+            } catch (Exception e) {
 
-    public void Labhistory() {
-        labHistory labh = new labHistory();
-        centerpanel.add(labh);
-        labh.setVisible(true);
+            }
+        } else {
+
+            labp.setVisible(true);
+
+            JScrollPane sscrolPane = new JScrollPane(labp);
+            centerpanel.addTab("LAB PRESCRIPTION", null, sscrolPane, null);
+            centerpanel.setSelectedComponent(sscrolPane);
+        }
     }
 
     public void pfollowup() {
+        centerpanel.removeTabAt(1);
         PatientFollowup pfollow = new PatientFollowup();
-        centerpanel.add(pfollow);
+
         pfollow.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(pfollow);
+        centerpanel.addTab("PATIENT FOLLOW UP", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
     }
 
     public void Preport() {
+        centerpanel.removeTabAt(1);
         PatientReport preport = new PatientReport();
-        centerpanel.add(preport);
+
         preport.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(preport);
+        centerpanel.addTab("PATIENT REPORT", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
     }
 
     public void Lreport() {
+        centerpanel.removeTabAt(1);
         LabReport lreport = new LabReport();
-        centerpanel.add(lreport);
+
         lreport.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(lreport);
+        centerpanel.addTab("LAB TESTS", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
     }
 
     public void Breport() {
+        centerpanel.removeTabAt(1);
         BillingReport breport = new BillingReport();
-        centerpanel.add(breport);
+
         breport.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(breport);
+        centerpanel.addTab("BILL REPORT", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
     }
 
     public void AdminAdd() {
-        Adminadd adminadd = new Adminadd();
-        centerpanel.add(adminadd);
+        centerpanel.removeTabAt(1);
+        AdminTestAdding adminadd = new AdminTestAdding();
+
         adminadd.setVisible(true);
+        JScrollPane scrollPane = new JScrollPane(adminadd);
+        //  Icon icon = PAGE_ICON;
+        centerpanel.addTab("ADD TESTS", null, scrollPane, null);
+        centerpanel.setSelectedComponent(scrollPane);
+
     }
-     public void Backup() {
+
+    public void Dashboard() {
+        centerpanel.removeTabAt(1);
+        BillingDashBoard dashboard = new BillingDashBoard();
+//        if (dashboard.isVisible()) {
+//            try {
+//                dashboard.setSelected(true);
+//            } catch (Exception e) {
+//
+//            }
+//            return;
+//        } else {
+//           
+        dashboard.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(dashboard);
+        centerpanel.addTab("DASH BOARD", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
+    }
+
+    public void Backup() {
         Backingup backuup = new Backingup();
-        centerpanel.add(backuup);
+//                .BackingUpInstance();
+//        if (backuup.isVisible()) {
+//            try {
+//                backuup.setSelected(true);
+//            } catch (Exception e) {
+//
+//            }
+//            return;
+//        } else {
+//           
         backuup.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(backuup);
+        centerpanel.addTab("BACK UP", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
+    }
+
+    public void patientbill() {
+        centerpanel.removeTabAt(1);
+        PatientBill pbill = new PatientBill();
+//        if (pbill.isVisible()) {
+//            try {
+//                pbill.setSelected(true);
+//            } catch (Exception e) {
+//
+//            }
+//            return;
+//        } else {
+
+        pbill.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(pbill);
+        centerpanel.addTab("PATIENT BILL", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
+
+    }
+
+    public void PatientDrug() {
+        centerpanel.removeTabAt(1);
+        PatientDrug pdrug = new PatientDrug();
+//        if (pdrug.isVisible()) {
+//            try {
+//                pdrug.setSelected(true);
+//            } catch (Exception e) {
+//
+//            }
+//            return;
+//        } else {
+
+        pdrug.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(pdrug);
+        centerpanel.addTab("PATIENT DRUG", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
+
+    }
+
+    public void payment() {
+        centerpanel.removeTabAt(1);
+        Payments pay = new Payments();
+//        if (pay.isVisible()) {
+//            try {
+//                pay.setSelected(true);
+//            } catch (Exception e) {
+//
+//            }
+//            return;
+//        } else {
+//            
+        pay.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(pay);
+        centerpanel.addTab("PAYMENTS", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
+
+    }
+
+    public void labtests() {
+        centerpanel.removeTabAt(1);
+        LabTestsList labtst = new LabTestsList();
+//        if (labtst.isVisible()) {
+//            try {
+//                labtst.setSelected(true);
+//            } catch (Exception e) {
+//
+//            }
+//            return;
+//        } else {
+//           
+        labtst.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(labtst);
+        centerpanel.addTab("LAB TESTS", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
+
+    }
+
+    public void receipt() {
+        centerpanel.removeTabAt(1);
+        Receipt receipt = new Receipt();
+//        if (receipt.isVisible()) {
+//            try {
+//                receipt.setSelected(true);
+//            } catch (Exception e) {
+//
+//            }
+//            return;
+//        } else {
+//            
+        receipt.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(receipt);
+        centerpanel.addTab("RECEIPTS", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
+    }
+
+    public void userlog() {
+        centerpanel.removeTabAt(1);
+        UserLog ulog = new UserLog();
+        ulog.setVisible(true);
+        JScrollPane sscrolPane = new JScrollPane(ulog);
+        centerpanel.addTab("USER LOG", null, sscrolPane, null);
+        centerpanel.setSelectedComponent(sscrolPane);
+    }
+
+    public void close() {
+        WindowEvent windowClose = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
+        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(windowClose);
     }
 
     public void datenandtime() {
@@ -877,13 +1805,19 @@ public void Saidia(){
                     int month = cal.get(Calendar.MONTH);
                     int year = cal.get(Calendar.YEAR);
                     int day = cal.get(Calendar.DAY_OF_MONTH);
-                    date.setText(day + "/" + (month + 1) + "/" + year);
+                    SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
 
+                    // date.setText(day + "/" + (month + 1) + "/" + year);
+                    date.setText(date_format.format(cal.getTime()));
                     int second = cal.get(Calendar.SECOND);
                     int minute = cal.get(Calendar.MINUTE);
                     int hour = cal.get(Calendar.HOUR);
 
-                    time.setText(hour + ":" + (minute) + ":" + second);
+                    SimpleDateFormat time_format = new SimpleDateFormat("HH:mm:ss");
+                   // time.setAlignmentY(CENTER_ALIGNMENT);
+                    time.setText(time_format.format(cal.getTime()));
+
+                    //time.setText(hour + ":" + (minute) + ":" + second);
                     try {
                         sleep(1000);
                     } catch (InterruptedException ex) {
@@ -893,118 +1827,63 @@ public void Saidia(){
         };
         clock.start();
     }
+    private javax.swing.JPanel buttonPanel;
+    private javax.swing.JButton createTabButton;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTabbedPane tabbedPane;
+
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//public class MyAction implements ActionListener{
+//		public void actionPerformed(ActionEvent e){
+//			String str = e.getActionCommand();
+//			if(str.equals("Add Tab")){
+//				String st = JOptionPane.showInputDialog(null, "Enter Tab Name.");
+//				if(!st.equals("")){
+//					JPanel panel2 = new JPanel();
+//                                        
+//					JLabel label = new JLabel("Your program is working successfully.");
+//					panel2.add(label);
+//					tab.add(st, panel2);
+//				}
+//			}
+//			else if(str.equals("Remove Tab")){
+//				tab.remove(tab.getTabCount()-1);
+//			}
+//		}
+//	
+//}
 
 /*
-JTabbedPane jtp = new JTabbedPane();
+ JTabbedPane jtp = new JTabbedPane();
           
 
-        //This creates the template on the windowed application that we will be using
-      // getContentPane().Newpatient(jtp);
+ //This creates the template on the windowed application that we will be using
+ // getContentPane().Newpatient(jtp);
 
-       JPanel jp1 = new JPanel();//This will create the first tab
-       jp1.setBackground(Color.lightGray);
+ JPanel jp1 = new JPanel();//This will create the first tab
+ jp1.setBackground(Color.lightGray);
 
-       JPanel jp2 = new JPanel();//This will create the second tab
+ JPanel jp2 = new JPanel();//This will create the second tab
         
-         //This creates a non-editable label, sets what the label will read
-        //and adds the label to the first tab
-       JLabel label1 = new JLabel();
-       label1.setText("This is Tab 1");
-       jp1.Newpatient(label1);
+ //This creates a non-editable label, sets what the label will read
+ //and adds the label to the first tab
+ JLabel label1 = new JLabel();
+ label1.setText("This is Tab 1");
+ jp1.Newpatient(label1);
 
-       //This adds the first and second tab to our tabbed pane object and names it
-       jtp.addTab("Tab1", jp1);
-       jtp.addTab("Tab2", jp2);
+ //This adds the first and second tab to our tabbed pane object and names it
+ jtp.addTab("Tab1", jp1);
+ jtp.addTab("Tab2", jp2);
      
 
-        //This creates a new button called "Press" and adds it to the second tab
-       JButton test = new JButton("Press");
-       JInternalFrame palette = new JInternalFrame("Palette", true, false, true, false);
-    palette.setBounds(650, 550, 900, 1000);
-    palette.putClientProperty("JInternalFrame.isPalette", Boolean.TRUE);
-    palette.setVisible(true);
-       jp2.Newpatient(test);
-       jp2.Newpatient(palette);
-       */
+ //This creates a new button called "Press" and adds it to the second tab
+ JButton test = new JButton("Press");
+ JInternalFrame palette = new JInternalFrame("Palette", true, false, true, false);
+ palette.setBounds(650, 550, 900, 1000);
+ palette.putClientProperty("JInternalFrame.isPalette", Boolean.TRUE);
+ palette.setVisible(true);
+ jp2.Newpatient(test);
+ jp2.Newpatient(palette);
+ */

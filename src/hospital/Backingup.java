@@ -20,14 +20,20 @@ import javax.swing.JOptionPane;
  * @author Dankiwan
  */
 public class Backingup extends javax.swing.JInternalFrame {
-
+private static Backingup Backingupinstance;
     /**
      * Creates new form Backupp
      */
     public Backingup() {
         initComponents();
     }
-
+ public Backingup BackingUpInstance(){
+    if(Backingupinstance==null){
+        Backingupinstance=new Backingup();
+    }
+    return Backingupinstance;
+    
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

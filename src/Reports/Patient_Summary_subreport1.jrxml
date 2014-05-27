@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Patient_Summary_subreport1" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="069c3e7c-f074-4107-bdaa-007d39fd1741">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="pid" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     patient_observation.`BODY_TEMPERATURE` AS patient_observation_BODY_TEMPERATURE,
+     patient_observation.`BLOOD_PRESSURE` AS patient_observation_BLOOD_PRESSURE,
+     patient_observation.`PULSE_RATE` AS patient_observation_PULSE_RATE,
+     patient_observation.`WEIGHT` AS patient_observation_WEIGHT,
+     patient_observation.`DATE` AS patient_observation_DATE
+FROM
+     `patient_observation` patient_observation
+where patient_id=$P{pid}]]>
+	</queryString>
+	<field name="patient_observation_BODY_TEMPERATURE" class="java.lang.Double"/>
+	<field name="patient_observation_BLOOD_PRESSURE" class="java.lang.String"/>
+	<field name="patient_observation_PULSE_RATE" class="java.lang.Double"/>
+	<field name="patient_observation_WEIGHT" class="java.lang.Double"/>
+	<field name="patient_observation_DATE" class="java.sql.Date"/>
+	<title>
+		<band height="34" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="34" backcolor="#EAEDF5" uuid="cc11f324-af74-4c6f-8fbe-dffc6c6e5389"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="20" y="14" width="100" height="20" uuid="70f1cd4f-6108-42ac-9bb8-b6f83840827d"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Body Temperature]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="155" y="14" width="71" height="20" uuid="dd3a80ba-1e04-4ae9-823c-ffc0a07fb7d7"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[B/P]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="265" y="14" width="82" height="20" uuid="f50eae30-e626-4745-9ad3-6acc588e5b7a"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Pulse Rate]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="371" y="14" width="51" height="20" uuid="38371f27-8ab3-4521-a0b0-bcf311045b9a"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Weight]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="38" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="38" backcolor="#C0CAEA" uuid="5fdce6d0-ed5a-473f-88e6-d9f15dc9f462"/>
+			</rectangle>
+			<textField>
+				<reportElement x="20" y="18" width="100" height="20" uuid="9b9a2219-eaca-4a19-9f61-add04903f140"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{patient_observation_BODY_TEMPERATURE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="155" y="18" width="71" height="20" uuid="bcdf98fc-e3bc-4f88-a1ac-9159394115c3"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{patient_observation_BLOOD_PRESSURE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="265" y="18" width="82" height="20" uuid="79ac16e1-9da8-4620-b1d9-d99e78b65298"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{patient_observation_PULSE_RATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="371" y="18" width="51" height="20" uuid="ee8de4db-b1f7-4af3-85c1-c6954bc9bec6"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{patient_observation_WEIGHT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+</jasperReport>

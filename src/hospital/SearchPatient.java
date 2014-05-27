@@ -3,26 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package hospital;
 
-import java.awt.Container;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Color;
+import java.awt.event.KeyEvent;
+import static java.lang.Thread.sleep;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Vector;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import net.proteanit.sql.DbUtils;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -37,20 +33,47 @@ import net.sf.jasperreports.view.JasperViewer;
  * @author Dankiwan
  */
 public class SearchPatient extends javax.swing.JInternalFrame {
-int cfee;
-String pid,title,fname,lname,m_status,b_group,town,village,age,image,p_cat,reg_date,status;
-String inthetable=null;
+
+    int cfee;
+    private static SearchPatient searchpatientinstance;
+    String pid, titlee, fname, lname, m_status, b_group, town, village, age, image,gender, p_cat, regdate, status, id;
+    String inthetable = null;
+    int month, year, day;
     /**
      * Creates new form SearchPatient
      */
     Connection con;
-     ResultSet rs=null;
-    PreparedStatement pst=null;
+    ResultSet rs = null;
+    PreparedStatement pst = null;
+
     public SearchPatient() {
         initComponents();
-        con=javaconnect.ConnectDb();
+        con = javaconnect.ConnectDb();
+        datenandtime();
+        combofill();
     }
-   
+
+    public SearchPatient SearchPatientInstance() {
+        if (searchpatientinstance == null) {
+            searchpatientinstance = new SearchPatient();
+
+        }
+        return searchpatientinstance;
+    }
+   public void combofill(){
+        try {
+            String sql1= "select category_name from hospital_patient_category ";
+            pst=con.prepareStatement(sql1);
+            rs=pst.executeQuery();
+            while(rs.next()){
+                String name=rs.getString("category_name");
+                Jcpatientcategory.addItem(name);  
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(NewPatient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
+  }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -62,15 +85,17 @@ String inthetable=null;
 
         jLabel2 = new javax.swing.JLabel();
         buttonGroup1 = new javax.swing.ButtonGroup();
+        jSeparator2 = new javax.swing.JSeparator();
         jToolBar1 = new javax.swing.JToolBar();
         jSeparator4 = new javax.swing.JToolBar.Separator();
         jButton1 = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JToolBar.Separator();
         jButton2 = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
+        jButton3 = new javax.swing.JButton();
+        jSeparator5 = new javax.swing.JToolBar.Separator();
         jButton6 = new javax.swing.JButton();
         jSeparator7 = new javax.swing.JToolBar.Separator();
-        jButton7 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         cmd_searchpatient = new javax.swing.JButton();
@@ -125,8 +150,26 @@ String inthetable=null;
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         jToolBar1.add(jButton2);
         jToolBar1.add(jSeparator1);
+
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Edit-icon_1.png"))); // NOI18N
+        jButton3.setText("Edit");
+        jButton3.setFocusable(false);
+        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton3);
+        jToolBar1.add(jSeparator5);
 
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/printer-icon.png"))); // NOI18N
         jButton6.setText("Print Card");
@@ -140,18 +183,6 @@ String inthetable=null;
         });
         jToolBar1.add(jButton6);
         jToolBar1.add(jSeparator7);
-
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/exit-icon.png"))); // NOI18N
-        jButton7.setText("Close");
-        jButton7.setFocusable(false);
-        jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton7);
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
@@ -187,6 +218,9 @@ String inthetable=null;
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txt_searchKeyReleased(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_searchKeyTyped(evt);
+            }
         });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -199,10 +233,10 @@ String inthetable=null;
                 .addGap(18, 18, 18)
                 .addComponent(J_search, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cmd_searchpatient)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -358,7 +392,7 @@ String inthetable=null;
 
         jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Patient Category", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION));
 
-        Jcpatientcategory.setModel(new javax.swing.DefaultComboBoxModel(new String[] { " ", "Laboratory", "Child Welfare Clinic (CWC)", "Family Planning", "Antinental", "Postinental", "Outpatient<5", "Outpatient>5", "VCT Clients", "Tettenus" }));
+        Jcpatientcategory.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "" }));
         Jcpatientcategory.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 JcpatientcategoryMouseReleased(evt);
@@ -388,13 +422,14 @@ String inthetable=null;
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Date"));
 
+        txt_date.setEditable(false);
         txt_date.setToolTipText("");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(txt_date)
                 .addContainerGap())
@@ -421,8 +456,7 @@ String inthetable=null;
                                 .addGap(35, 35, 35)
                                 .addComponent(jCheckBox_fno)))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -445,8 +479,8 @@ String inthetable=null;
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -501,12 +535,8 @@ String inthetable=null;
     }//GEN-LAST:event_txt_lastname2ActionPerformed
 
     private void cmd_searchpatientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmd_searchpatientActionPerformed
-Search();        // TODO add your handling code here:
+        Search();        // TODO add your handling code here:
     }//GEN-LAST:event_cmd_searchpatientActionPerformed
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        dispose();        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton7ActionPerformed
 
     private void txt_titleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_titleActionPerformed
         // TODO add your handling code here:
@@ -521,33 +551,35 @@ Search();        // TODO add your handling code here:
     }//GEN-LAST:event_jCheckBox_fnoActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-  try{
-      String ppid=txt_search.getText();
+        try {
+            String ppid = txt_search.getText();
 //String report="D:\\NetbeansProject\\Hospital\\Reports\\report2.jrxml";
-   JasperDesign jd=JRXmlLoader.load("D:\\NetbeansProject\\Hospital\\Reports\\report2.jrxml");
-    String sql="(SELECT patient.TITLE,patient.FIRST_NAME,patient.LAST_NAME,patient.PATIENT_ID,patient.GENDER,patient.REGISTRATION_DATE,patient_category.AGE,patient_category.TOWN,patient_category.VILLAGE FROM patient,patient_category WHERE patient.PATIENT_ID='"+ppid+"' and (patient.PATIENT_ID=patient_category.PATIENT_ID))";
-    JRDesignQuery newQuery=new JRDesignQuery();
-   newQuery.setText(sql);
-    jd.setQuery(newQuery);
-  JasperReport jr=JasperCompileManager.compileReport(jd);
-    JasperPrint jp= JasperFillManager.fillReport(jr, null,con);
-    JasperViewer.viewReport(jp,false);
-}
-catch(Exception e){
-    JOptionPane.showMessageDialog(null, e);
-}
+            String report="D:\\NetbeansProject\\Hospital\\Reports\\report2.jrxml";
+          
+            JasperDesign jd = JRXmlLoader.load(report);
+            String sql = "(SELECT patient.TITLE,patient.FIRST_NAME,patient.LAST_NAME,patient.PATIENT_ID,patient.GENDER,patient.REGISTRATION_DATE,patient_category.AGE,patient_category.TOWN,patient_category.VILLAGE FROM patient,patient_category WHERE patient.PATIENT_ID='" + ppid + "' and (patient.PATIENT_ID=patient_category.PATIENT_ID))";
+            JRDesignQuery newQuery = new JRDesignQuery();
+            newQuery.setText(sql);
+            jd.setQuery(newQuery);
+            JasperReport jr = JasperCompileManager.compileReport(jd);
+            JasperPrint jp = JasperFillManager.fillReport(jr, null, con);
+            JasperViewer.viewReport(jp, false);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
          }//GEN-LAST:event_jButton6ActionPerformed
 
     private void txt_searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_searchActionPerformed
-Search();         // TODO add your handling code here:
+        Search();         // TODO add your handling code here:
     }//GEN-LAST:event_txt_searchActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-patiententry();        // TODO add your handling code here:
+
+        patiententry();        // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void txt_searchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyReleased
-Search(); 
+        Search();
 
 // TODO add your handling code here:
     }//GEN-LAST:event_txt_searchKeyReleased
@@ -557,187 +589,285 @@ Search();
     }//GEN-LAST:event_JcpatientcategoryActionPerformed
 
     private void jCheckBox_fyesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jCheckBox_fyesKeyReleased
-          // TODO add your handling code here:
+        // TODO add your handling code here:
     }//GEN-LAST:event_jCheckBox_fyesKeyReleased
 
     private void JcpatientcategoryMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JcpatientcategoryMouseReleased
-     // TODO add your handling code here:
+        // TODO add your handling code here:
     }//GEN-LAST:event_JcpatientcategoryMouseReleased
 
     private void jCheckBox_fyesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox_fyesMouseClicked
-     if(jCheckBox_fyes.isSelected()){
-    Jcpatientcategory.setEnabled(false);
-}      // TODO add your handling code here:
+        if (jCheckBox_fyes.isSelected()) {
+            Jcpatientcategory.setEnabled(false);
+        } else {
+            Jcpatientcategory.setEnabled(true);// TODO add your handling code here:
     }//GEN-LAST:event_jCheckBox_fyesMouseClicked
-
+    }
     private void jCheckBox_fnoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox_fnoMouseClicked
-   // TODO add your handling code here:
+        if (jCheckBox_fno.isSelected()) {
+            Jcpatientcategory.setEnabled(true);
+        } else {
+            Jcpatientcategory.setEnabled(false);
+        }// TODO add your handling code here:
     }//GEN-LAST:event_jCheckBox_fnoMouseClicked
 
     private void J_searchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_J_searchMouseClicked
-int t=J_search.getSelectedIndex();
-        if(t==1){
-            new MyDialog(null);
+        int t = J_search.getSelectedIndex();
+        if (t == 1) {
+            Psearchname ps = new Psearchname(null, closable, this);
+            ps.setVisible(true);
         }
 // TODO add your handling code here:
     }//GEN-LAST:event_J_searchMouseClicked
 
     private void J_searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_J_searchActionPerformed
-int t=J_search.getSelectedIndex();
-        if(t==1){
-            new MyDialog(null);
+        int t = J_search.getSelectedIndex();
+        if (t == 1) {
+            Psearchname ps = new Psearchname(null, closable, this);
+            ps.setVisible(true);
         }        // TODO add your handling code here:
     }//GEN-LAST:event_J_searchActionPerformed
-public void Search(){
-    try{
-    String sql1="SELECT patient.TITLE,patient.FIRST_NAME,patient.LAST_NAME,patient.PATIENT_ID,patient_category.MARITAL_STATUS,patient_category.BLOOD_GROUP,patient_category.TOWN,patient_category.VILLAGE,patient_category.AGE,patient_category.IMAGE FROM patient,patient_category WHERE patient.PATIENT_ID=? and patient.PATIENT_ID=patient_category.PATIENT_ID;";
-    pst=con.prepareStatement(sql1);
-    pst.setString(1, txt_search.getText());
-    rs=pst.executeQuery();
-    if(rs.next()){
-        pid=rs.getString("PATIENT_ID");
-       txt_PID.setText(pid);
-         title=rs.getString("TITLE");
-       txt_title.setText(title);
-           fname=rs.getString("FIRST_NAME");
-        txt_firstname2.setText(fname);
-         lname=rs.getString("LAST_NAME");
-        txt_lastname2.setText(lname);
-     m_status=rs.getString("MARITAL_STATUS");
-     b_group=rs.getString("BLOOD_GROUP");
-     town=rs.getString("TOWN");
-     village=rs.getString("VILLAGE");
-     age=rs.getString("AGE");
-     image=rs.getString("IMAGE");
-     p_cat=(String) Jcpatientcategory.getSelectedItem();
-     reg_date=txt_date.getText();
-     status="revist";
-                   }
-  }
-catch(Exception e){
-}
-}
-  public void patiententry(){
- try{
-    if(jCheckBox_fyes.isSelected()){
-        cfee=300;
-    }
-    else if(jCheckBox_fno.isSelected()){
-        cfee=0;
-    }
-    
-    }
-    catch(Exception e){
-        JOptionPane.showMessageDialog(null, e);
-    }
-    try{
-   String sql1="insert into patient_category(PATIENT_ID,PATIENT_CATEGORY, MARITAL_STATUS, BLOOD_GROUP, TOWN, VILLAGE, REGISTRATION_DATE, AGE, STATUS,IMAGE) values('"+pid+"','"+p_cat+"','"+m_status+"','"+b_group+"','"+town+"','"+village+"','"+reg_date+"','"+age+"','"+status+"','"+image+"')";
-    String newpatientinsertbil="insert into patient_billing(PATIENT_ID,CONSULTATION_FEE, LAB_FEE, OTHER_FEES, TOTAL) values('"+pid+"','"+cfee+"','"+0+"','"+0+"','"+0+"')";
-           
-   Statement sttm=con.createStatement();
-        sttm.executeUpdate(sql1);
-        sttm.executeUpdate(newpatientinsertbil);
-        JOptionPane.showMessageDialog(null, "Record entered!!");
-        txt_PID.setText("");
-        txt_firstname2.setText("");
-        txt_lastname2.setText("");
-        txt_search.setText("");
-        txt_title.setText("");
-}
-catch(Exception e){
-    JOptionPane.showMessageDialog(null,e);
-}
-}
-    class MyDialog extends JDialog {  
-        JTextField search;
-         JTable table;
-        public MyDialog( JFrame frame ) {  
-            super( frame, "SEARCH PATIENT NAME", true );  
-            Vector col = new Vector();  
-            col.add( "Name" );  
-            col.add( "Roll No" );  
-            col.add( "Grade" );
-           
-            setBounds(500, 200, 400, 400);
-            Vector first = new Vector();  
-//            first.add( "Bhupendra" );  
-//            first.add( "100" );  
-//            first.add( "A+" );  
-            Vector row = new Vector();  
-            //row.add( first ); 
-            search=new JTextField();
-            search.setBounds(10, 20, 120, 40);
-            JButton vb=new JButton("Search");
-            vb.setBounds(140, 20, 50, 20);
-            vb.addActionListener(new ActionListener() {
 
-                @Override
-                public void actionPerformed(ActionEvent ae) {
-         SearchName();
-         
-                  }
-            });
-            JButton ex=new JButton("OK");
-             ex.setBounds(200, 20, 50, 20);
-            ex.addActionListener(new ActionListener() {
+    private void txt_searchKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyTyped
+        char c = evt.getKeyChar();
+        if (!(Character.isDigit(c) || c == KeyEvent.VK_BACK_SPACE || c == KeyEvent.VK_DELETE)) {
+            getToolkit().beep();
+            evt.consume();
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_searchKeyTyped
 
-                @Override
-                public void actionPerformed(ActionEvent ae) {
-                    select();
-                   dispose();
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+clear();        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+      if(txt_search.getText().equals("")){
+          JOptionPane.showMessageDialog(null, "Please enter the patient id");
+          txt_search.setBackground(Color.GREEN);
+          return;
+      }
+      String iid=txt_search.getText();
+        EditPatient edp=new EditPatient(null, closable,iid);
+       edp.setVisible(true);// TODO add your handling code here:
+    }//GEN-LAST:event_jButton3ActionPerformed
+    public void clear() {
+        txt_PID.setText(null);
+        txt_firstname2.setText(null);
+        txt_lastname2.setText(null);
+        txt_search.setText(null);
+        txt_title.setText(null);
+        Jcpatientcategory.setSelectedIndex(0);
+        jCheckBox_fyes.setSelected(false);
+        jCheckBox_fno.setSelected(false);
+    }
+
+    public void datenandtime() {
+        Thread clock = new Thread() {
+            public void run() {
+                for (;;) {
+                    Calendar cal = new GregorianCalendar();
+                    month = cal.get(Calendar.MONTH);
+                    year = cal.get(Calendar.YEAR);
+                    day = cal.get(Calendar.DAY_OF_MONTH);
+                    SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
+
+                    txt_date.setText(date_format.format(cal.getTime()));
+                    // date.setText( year+ "/" + (month + 1) + "/" + day);
+                    // daate = (year + "/" + (month + 1) + "/" + day);
+
+                    int second = cal.get(Calendar.SECOND);
+                    int minute = cal.get(Calendar.MINUTE);
+                    int hour = cal.get(Calendar.HOUR);
+
+                    //   time.setText(hour + ":" + (minute) + ":" + second);
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException ex) {
+                    }
                 }
-            });
-            table = new JTable( row, col );  
-           JPanel c = new JPanel();  
-            c.add(search);
-            c.add(vb);
-            c.add(ex);
-            c.add( table ); 
-            setContentPane(c);  
-            this.show();
-        } 
-        
-public void SearchName(){
-    try{
-    String sql1="SELECT PATIENT_ID,FIRST_NAME,LAST_NAME, MOBILE_NO FROM patient WHERE FIRST_NAME= ? or LAST_NAME= ?";
-    pst=con.prepareStatement(sql1);
-    pst.setString(1, search.getText());
-     pst.setString(2, search.getText());
-     rs=pst.executeQuery();
-     //if(rs.next()){
-     //piid=rs.getString("PATIENT_ID");
-     table.setModel(DbUtils.resultSetToTableModel(rs)); 
-   // JOptionPane.showMessageDialog(null, piid);
-    }
-   // }
-catch(Exception e){
-}
-}
-public void select(){
-    try{
-    int selectedrow=table.getSelectedRow();
-    inthetable=(table.getModel().getValueAt(selectedrow, 0).toString());
-    txt_search.setText(inthetable);
-    J_search.setSelectedIndex(0);
             }
-    catch(Exception e){
+        };
+        clock.start();
     }
-}
-    }  
 
+    public void Search() {
+        try {
+            if (txt_search.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "Please enter the patient ID");
+                txt_search.setBackground(Color.GREEN);
+                return;
+            }
+            id = txt_search.getText();
+            String sql1 = "SELECT patient.TITLE,patient.GENDER,patient.FIRST_NAME,patient.LAST_NAME,patient.PATIENT_ID,patient_category.MARITAL_STATUS,patient_category.BLOOD_GROUP,patient_category.TOWN,patient_category.VILLAGE,patient_category.AGE,patient_category.IMAGE FROM patient,patient_category WHERE patient.PATIENT_ID='" + id + "' and patient.PATIENT_ID=patient_category.PATIENT_ID;";
+            pst = con.prepareStatement(sql1);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                pid = rs.getString("PATIENT_ID");
+                txt_PID.setText(pid);
+                titlee = rs.getString("TITLE");
+                txt_title.setText(titlee);
+                fname = rs.getString("FIRST_NAME");
+                txt_firstname2.setText(fname);
+                lname = rs.getString("LAST_NAME");
+                txt_lastname2.setText(lname);
+                m_status = rs.getString("MARITAL_STATUS");
+                b_group = rs.getString("BLOOD_GROUP");
+                town = rs.getString("TOWN");
+                village = rs.getString("VILLAGE");
+                age = rs.getString("AGE");
+                image = rs.getString("IMAGE");
+                p_cat = (String) Jcpatientcategory.getSelectedItem();
+                regdate = txt_date.getText();
+                gender=rs.getString("GENDER");
+                status = "revist";
+
+            } else {
+                JOptionPane.showMessageDialog(null, "The Patient ID does not exist", "Alert", JOptionPane.WARNING_MESSAGE, null);
+                clear();
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    public void patiententry() {
+
+        if (jCheckBox_fyes.isSelected()) {
+            cfee = 200;
+        } else if (jCheckBox_fno.isSelected()) {
+            cfee = 0;
+        }
+        try {
+            if (txt_search.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "Please enter the patient ID");
+                txt_search.setBackground(Color.GREEN);
+                return;
+            }
+
+            if (jCheckBox_fno.isSelected() && Jcpatientcategory.getSelectedIndex() == 0) {
+                JOptionPane.showMessageDialog(null, "Please choose the patient category");
+                Jcpatientcategory.setBackground(Color.GREEN);
+                return;
+            }
+            if (jCheckBox_fyes.isSelected() == false && jCheckBox_fno.isSelected() == false) {
+                JOptionPane.showMessageDialog(null, "Please select the follow up");
+                jCheckBox_fno.setBackground(Color.GREEN);
+                jCheckBox_fyes.setBackground(Color.GREEN);
+                return;
+            }
+            String sql1 = "insert into patient_category(PATIENT_ID,PATIENT_CATEGORY,GENDER, MARITAL_STATUS, BLOOD_GROUP, TOWN, VILLAGE, REGISTRATION_DATE, AGE, STATUS,IMAGE) values('" + pid + "','" + p_cat + "','"+gender+"','" + m_status + "','" + b_group + "','" + town + "','" + village + "','" + regdate + "','" + age + "','" + status + "','" + image + "')";
+            String newpatientinsertbil = "insert into patient_billing(PATIENT_ID,CONSULTATION_FEE,MEDICAL_FEE, LAB_FEE) values('" + pid + "','" + cfee + "','" + 0 + "','" + 0 + "')";
+
+            Statement sttm = con.createStatement();
+            sttm.executeUpdate(sql1);
+            sttm.executeUpdate(newpatientinsertbil);
+            JOptionPane.showMessageDialog(null, "Record entered!!");
+            txt_PID.setText("");
+            txt_firstname2.setText("");
+            txt_lastname2.setText("");
+            txt_search.setText("");
+            txt_title.setText("");
+            Jcpatientcategory.setSelectedIndex(0);
+            jCheckBox_fno.setSelected(false);
+            jCheckBox_fyes.setSelected(false);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+//    class MyDialog extends JDialog {  
+//        JTextField search;
+//         JTable table;
+//        public MyDialog( JFrame frame ) {  
+//            super( frame, "SEARCH PATIENT NAME", true );  
+//            Vector col = new Vector();  
+//            col.add( "Name" );  
+//            col.add( "Roll No" );  
+//            col.add( "Grade" );
+//           
+//            setBounds(500, 200, 400, 400);
+//            Vector first = new Vector();  
+////            first.add( "Bhupendra" );  
+////            first.add( "100" );  
+////            first.add( "A+" );  
+//            Vector row = new Vector();  
+//            //row.add( first ); 
+//            search=new JTextField();
+//            search.setBounds(10, 20, 150, 30);
+//                    
+//                    
+//            JButton vb=new JButton("Search");
+//            vb.setBounds(170, 20, 100, 30);
+//            vb.addActionListener(new ActionListener() {
+//
+//                @Override
+//                public void actionPerformed(ActionEvent ae) {
+//         SearchName();
+//         
+//                  }
+//            });
+//            JButton ex=new JButton("OK");
+//             ex.setBounds(280, 20, 100, 30);
+//            ex.addActionListener(new ActionListener() {
+//
+//                @Override
+//                public void actionPerformed(ActionEvent ae) {
+//                    select();
+//                   dispose();
+//                }
+//            });
+//            table = new JTable( row, col ); 
+//            table.setBounds(10,70,380,380);
+//           JPanel c = new JPanel();
+//           c.setLayout(null);
+//            c.add(search);
+//            c.add(vb);
+//            c.add(ex);
+//            c.add( table ); 
+//            setContentPane(c);  
+//            this.show();
+//        } 
+//       
+//public void SearchName(){
+//    try{
+//    String sql1="SELECT PATIENT_ID,FIRST_NAME,LAST_NAME, MOBILE_NO FROM patient WHERE FIRST_NAME= ? or LAST_NAME= ?";
+//    pst=con.prepareStatement(sql1);
+//    pst.setString(1, search.getText());
+//     pst.setString(2, search.getText());
+//     rs=pst.executeQuery();
+//    if(rs.next()){
+//     table.setModel(DbUtils.resultSetToTableModel(rs)); 
+//  }
+//     else{
+//        JOptionPane.showMessageDialog(null, "The Patient Name does not exist", "Alert", JOptionPane.WARNING_MESSAGE, null);
+//        clear();
+//    }
+//   }
+//catch(Exception e){
+//}
+//}
+//public void select(){
+//    try{
+//    int selectedrow=table.getSelectedRow();
+//    inthetable=(table.getModel().getValueAt(selectedrow, 0).toString());
+//    txt_search.setText(inthetable);
+//    J_search.setSelectedIndex(0);
+//            }
+//    catch(Exception e){
+//    }
+//}
+//    }  
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox J_search;
-    private javax.swing.JComboBox Jcpatientcategory;
+    public javax.swing.JComboBox J_search;
+    public javax.swing.JComboBox Jcpatientcategory;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton cmd_searchpatient;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JCheckBox jCheckBox_fno;
-    private javax.swing.JCheckBox jCheckBox_fyes;
+    public javax.swing.JCheckBox jCheckBox_fno;
+    public javax.swing.JCheckBox jCheckBox_fyes;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel17;
@@ -753,17 +883,19 @@ public void select(){
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JToolBar.Separator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator4;
+    private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar.Separator jSeparator7;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JToolBar jToolBar1;
     public javax.swing.JLabel lb_check;
-    private javax.swing.JTextField txt_PID;
+    public javax.swing.JTextField txt_PID;
     private javax.swing.JTextField txt_date;
-    private javax.swing.JTextField txt_firstname2;
-    private javax.swing.JTextField txt_lastname2;
+    public javax.swing.JTextField txt_firstname2;
+    public javax.swing.JTextField txt_lastname2;
     public javax.swing.JTextField txt_search;
-    private javax.swing.JTextField txt_title;
+    public javax.swing.JTextField txt_title;
     // End of variables declaration//GEN-END:variables
 }

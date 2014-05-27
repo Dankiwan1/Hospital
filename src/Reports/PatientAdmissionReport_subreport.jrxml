@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PatientAdmissionReport_subreport" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="a2598e4c-5b76-42d2-a383-bf7a9324d5cd">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="pcat" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT count(
+     patient_category.`GENDER`) AS GENDER
+FROM
+     `patient_category` patient_category
+where GENDER='male' and patient_category=$P{pcat};]]>
+	</queryString>
+	<field name="GENDER" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="33" splitType="Stretch">
+			<staticText>
+				<reportElement x="398" y="10" width="69" height="20" uuid="87591096-ad5f-438c-946b-29768ae437a2"/>
+				<text><![CDATA[No. of Males:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="467" y="10" width="76" height="20" uuid="28b8b1f6-1df0-4d89-b1ce-3ec7eda7ec53"/>
+				<textFieldExpression><![CDATA[$F{GENDER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

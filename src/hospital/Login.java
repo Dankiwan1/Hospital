@@ -3,120 +3,117 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package hospital;
 
 import java.awt.event.KeyEvent;
+import static java.lang.Thread.sleep;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import javax.swing.JOptionPane;
+
 /**
  *
  * @author dankiwan
  */
 public class Login extends javax.swing.JFrame {
-    Connection con=null;
-    ResultSet rs=null;
-    PreparedStatement pst=null;
-    public Home hoomie;
-   String loggedin_user;
-    
+
+    Connection con = null;
+    ResultSet rs = null;
+    PreparedStatement pst = null;
+    //public Home hoomie;
+    String loggedin_user;
+    int month, day, year, second, minute, hour;
+     int id;
+
     /**
      * Creates new form Login
      */
     public Login() {
         initComponents();
-        con=javaconnect.ConnectDb();
-        combofill();
-        
+        con = javaconnect.ConnectDb();
+        datenandtime();
     }
     //method to exit the system
-public void close(){
-    System.exit(0);
-}
+
+    public void close() {
+        System.exit(0);
+    }
+
+    public void datenandtime() {
+        Thread clock = new Thread() {
+            public void run() {
+                for (;;) {
+                    Calendar cal = new GregorianCalendar();
+                    month = cal.get(Calendar.MONTH);
+                    year = cal.get(Calendar.YEAR);
+                    day = cal.get(Calendar.DAY_OF_MONTH);
+                    SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
+
+                    // date.setText(day + "/" + (month + 1) + "/" + year);
+                    date.setText(date_format.format(cal.getTime()));
+                    second = cal.get(Calendar.SECOND);
+                    minute = cal.get(Calendar.MINUTE);
+                    hour = cal.get(Calendar.HOUR);
+                    SimpleDateFormat time_format = new SimpleDateFormat("HH:mm:ss");
+
+                    time.setText(time_format.format(cal.getTime()));
+
+                    //   time.setText(hour + ":" + (minute) + ":" + second);
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException ex) {
+                    }
+                }
+            }
+        };
+        clock.start();
+    }
 //Combo filling query..
-public void combofill(){
-    try{
-       String sql1= "select distinct category from user"; 
-        pst=con.prepareStatement(sql1);
-            rs=pst.executeQuery();
-            while(rs.next()){
-                String name=rs.getString("category");
-                jComboBoxusertype.addItem(name);  
-            }
-    }
-    catch(SQLException e){
-        JOptionPane.showMessageDialog(null, e);
-    }
-}
-//returns selected string(value)from combobox
-public String selectcombo(){
- return (String)jComboBoxusertype.getSelectedItem();  
-}
 
+    public void loggin() {
+        // name();
 
-public void loggin(){
-     // name();
-    
-     String sql="select * from user where username=? and password=? and category=?";
-        try{
-            pst=con.prepareStatement(sql);
+        String sql = "select * from user where username=? and password=?";
+        try {
+            pst = con.prepareStatement(sql);
             pst.setString(1, txt_username.getText());
-            pst. setString(2, txt_password.getText());
-            pst. setString(3, selectcombo());
-            rs=pst.executeQuery();
-            
-            if(rs.next()){
-            loggedin_user=rs.getString("USER_ID");
-          String sqql="Update user set Status='yes' where category='"+selectcombo()+"'and password='"+txt_password.getText()+"' and username='"+txt_username.getText()+"'";
-              Statement stm=con.createStatement();
-     stm.executeUpdate(sqql);
-            if(jComboBoxusertype.getSelectedIndex()==0){
-        hoomie = new Home(loggedin_user);
-     //   hoomie.button1.setEnabled(false);
-       // hoomie.button2.setEnabled(false);
+            pst.setString(2, txt_password.getText());
+            rs = pst.executeQuery();
+
+            if (rs.next()) {
+                loggedin_user = rs.getString("USER_ID");
+               id = Integer.parseInt(loggedin_user);
+                String sqql = "Update user set Status='yes' where  password='" + txt_password.getText() + "' and username='" + txt_username.getText() + "'";
+                Statement stm = con.createStatement();
+                stm.executeUpdate(sqql);
+                String status = "Loggedin";
+                String datetime = year + "-" + (month + 1) + "-" + day + " " + hour + ":" + minute + ":" + second;
+                //JOptionPane.showMessageDialog(null, datetime);
+                String log = "insert into user_log (USER_ID,Status,login_time)values('" + loggedin_user + "','" + status + "','" + datetime + "')";
+                Statement stmm = con.createStatement();
+                stmm.executeUpdate(log);
+                 this.dispose();
+                Home h=new Home(loggedin_user);
+                h.setVisible(true);
+            } else {
+                error_txt.setText("<html><font color=red><i>Please verify your login credentials...<br><hr></i></font></html>");
             }
-     else{
-         hoomie=new Home(loggedin_user);
-       
-     }
-               // checklogin();
-           /*     
-                  String status="loggedin";
-               String logintime=null;
-                    String logouttime=null;
-                  //  String memberno=rs.getString("memberno");
-                      String title=rs.getString("title");
-                        String fname=rs.getString("firstname");
-                          String lname=rs.getString("lastname");
-                    
-                String sqlinsert="insert into userlog values('"+memberno+"','"+title+"','"+fname+"','"+lname+"','"+logintime+"','"+logouttime+"','"+status+"')";
-                           Statement stm=con.createStatement();
-     stm.executeUpdate(sqlinsert);*/
-              //  hoomie = new Home(loggedin_user);
-               // hin=new HospitalInfo(loggedin_user);
-               //JOptionPane.showMessageDialog(null, "Welcome "+txt_username.getText()+"");
-                  
-        this.dispose();
-            } else{
-                error_txt.setText("<html><font color=red><i>Pease verify your login credentials...</i></font></html>");
-            }
-        } catch(SQLException e){
-            JOptionPane.showMessageDialog(null,e);
-    }          
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
 
-       
-}
+    }
 
-
-  //public  String name(){
-      //   String name=JOptionPane.showInputDialog(null, "Enter the name of the hospital");
+    // public  String name(){
+    //   String name=JOptionPane.showInputDialog(null, "Enter the name of the hospital");
     //   return name.toUpperCase();
-  //  }
-
+    //  }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -130,8 +127,6 @@ public void loggin(){
         jPanel7 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
-        lblusertype = new javax.swing.JLabel();
-        jComboBoxusertype = new javax.swing.JComboBox();
         lblusername = new javax.swing.JLabel();
         txt_username = new javax.swing.JTextField();
         lblpassword = new javax.swing.JLabel();
@@ -142,6 +137,8 @@ public void loggin(){
         error_txt = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
+        date = new javax.swing.JLabel();
+        time = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
 
@@ -177,15 +174,6 @@ public void loggin(){
 
         jPanel8.setBackground(new java.awt.Color(242, 246, 245));
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Login", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("BankGothic Md BT", 1, 36))); // NOI18N
-
-        lblusertype.setText("User Type:");
-
-        jComboBoxusertype.setToolTipText("Choose the user type.");
-        jComboBoxusertype.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxusertypeActionPerformed(evt);
-            }
-        });
 
         lblusername.setText("Username:");
 
@@ -256,20 +244,13 @@ public void loggin(){
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(error_txt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel8Layout.createSequentialGroup()
-                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                                        .addComponent(lblusertype)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jComboBoxusertype, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel8Layout.createSequentialGroup()
-                                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(lblusername)
-                                            .addComponent(lblpassword))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(txt_password)
-                                            .addComponent(txt_username))))
-                                .addGap(0, 0, Short.MAX_VALUE))))
+                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblusername)
+                                    .addComponent(lblpassword))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txt_username)
+                                    .addComponent(txt_password)))))
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addGap(122, 122, 122)
                         .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -278,26 +259,29 @@ public void loggin(){
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblusertype)
-                    .addComponent(jComboBoxusertype, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGap(22, 22, 22)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblusername)
                     .addComponent(txt_username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(22, 22, 22)
+                .addGap(31, 31, 31)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblpassword)
                     .addComponent(txt_password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(error_txt, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(error_txt, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 13, Short.MAX_VALUE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(16, 16, 16))
         );
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Hospital-icon .png"))); // NOI18N
+
+        date.setBackground(new java.awt.Color(204, 204, 255));
+        date.setFont(new java.awt.Font("BankGothic Lt BT", 1, 18)); // NOI18N
+        date.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        time.setFont(new java.awt.Font("BankGothic Lt BT", 1, 18)); // NOI18N
+        time.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -305,15 +289,24 @@ public void loggin(){
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(date, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(time, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
-                .addGap(26, 26, 26))
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(date, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(time, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(114, 145, 160));
@@ -384,40 +377,36 @@ public void loggin(){
     }//GEN-LAST:event_txt_usernameActionPerformed
 
     private void cmd_loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmd_loginActionPerformed
-  
+
         // TODO add your handling code here
-loggin();    
-//hoomie=new Home(loggedin_user);
-//this.dispose();
+        loggin();
+
+
     }//GEN-LAST:event_cmd_loginActionPerformed
-    
+
     private void txt_passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_passwordActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_passwordActionPerformed
 
     private void cmd_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmd_cancelActionPerformed
-close();
+        close();
 // TODO add your handling code here:
-      
-   
+
+
     }//GEN-LAST:event_cmd_cancelActionPerformed
 
-    private void jComboBoxusertypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxusertypeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxusertypeActionPerformed
-
     private void txt_passwordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_passwordKeyPressed
-if(evt.getKeyCode()==KeyEvent.VK_ENTER){  
-        // TODO add your handling code here
-  loggin();    
-}
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            // TODO add your handling code here
+            loggin();
+        }
     }//GEN-LAST:event_txt_passwordKeyPressed
 
     private void txt_usernameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_usernameKeyPressed
-  if(evt.getKeyCode()==KeyEvent.VK_ENTER){  
-        // TODO add your handling code here
-  loggin();    
-}      // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            // TODO add your handling code here
+            loggin();
+        }      // TODO add your handling code here:
     }//GEN-LAST:event_txt_usernameKeyPressed
 
     /**
@@ -458,8 +447,8 @@ if(evt.getKeyCode()==KeyEvent.VK_ENTER){
     // Variables declaration - do not modify//GEN-BEGIN:variables
     javax.swing.JButton cmd_cancel;
     javax.swing.JButton cmd_login;
+    javax.swing.JLabel date;
     javax.swing.JLabel error_txt;
-    javax.swing.JComboBox jComboBoxusertype;
     javax.swing.JLabel jLabel1;
     javax.swing.JLabel jLabel2;
     javax.swing.JLabel jLabel6;
@@ -471,7 +460,7 @@ if(evt.getKeyCode()==KeyEvent.VK_ENTER){
     javax.swing.JPanel jPanel8;
     javax.swing.JLabel lblpassword;
     javax.swing.JLabel lblusername;
-    javax.swing.JLabel lblusertype;
+    javax.swing.JLabel time;
     javax.swing.JPasswordField txt_password;
     javax.swing.JTextField txt_username;
     // End of variables declaration//GEN-END:variables

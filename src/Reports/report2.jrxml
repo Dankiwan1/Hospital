@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2" language="groovy" pageWidth="600" pageHeight="300" orientation="Landscape" columnWidth="560" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4bb90188-ab8a-4d23-856a-e3749ce3f9a2">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT patient.TITLE,patient.FIRST_NAME,patient.LAST_NAME,patient.PATIENT_ID,patient.GENDER,patient.REGISTRATION_DATE,patient_category.AGE,patient_category.TOWN,patient_category.VILLAGE FROM patient,patient_category WHERE patient.PATIENT_ID=2 and (patient.PATIENT_ID=patient_category.PATIENT_ID);]]>
+	</queryString>
+	<field name="TITLE" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="FIRST_NAME" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="LAST_NAME" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="PATIENT_ID" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="GENDER" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="REGISTRATION_DATE" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="AGE" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="TOWN" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="VILLAGE" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="TOWN_1" class="java.lang.Integer" resetType="Column" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{TOWN}]]></variableExpression>
+	</variable>
+	<variable name="VILLAGE_1" class="java.lang.Integer" resetType="Column" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{VILLAGE}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="74" splitType="Immediate">
+			<staticText>
+				<reportElement x="198" y="0" width="361" height="34" uuid="07fdea32-01b7-41c7-aba3-d0ce807e7d1e"/>
+				<textElement textAlignment="Right">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MARTMERG MEDICAL CLINIC ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="329" y="34" width="215" height="20" uuid="62711617-3e15-419f-9c7e-d71c59b65ca1"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[P.O. BOX 46915 CELL: 0722-580861]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="359" y="54" width="185" height="20" uuid="2558f9a4-8e67-4975-b3f8-17a9e58bdf1a"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[KAHAWA SUKARI NAIROBI]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="166" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="31" width="559" height="20" uuid="b7ea134c-f6d3-4d52-b596-9094048d0723"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATE:.................................................................................................................................]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="59" y="24" width="100" height="20" uuid="0ef1ca5b-3f0a-4967-bc3d-799301c178cf"/>
+				<textElement>
+					<font fontName="Adobe Caslon Pro" size="14" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{REGISTRATION_DATE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="64" width="559" height="20" uuid="c8f4c0e4-4cc2-4301-86a7-2d2881e3115a"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AGE:.................................................SEX............................................................................]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="59" y="58" width="100" height="20" uuid="9a2a7e66-b23b-466d-91cb-836651deb9c2"/>
+				<textElement>
+					<font fontName="Adobe Caslon Pro" size="14" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AGE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="277" y="58" width="100" height="20" uuid="0284ea45-d3fe-48ca-9b6c-65daf57ca854"/>
+				<textElement>
+					<font fontName="Adobe Caslon Pro" size="14" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GENDER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="98" width="559" height="27" uuid="832e5de2-d1ee-49e2-ab05-faf2d8ae6d3a"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OP NO.................................................................................................................................]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="59" y="94" width="100" height="20" forecolor="#FF0000" uuid="702215b7-cf4c-4009-90f4-6e3355bd329a"/>
+				<textElement>
+					<font fontName="Adobe Caslon Pro" size="14" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PATIENT_ID}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="132" width="559" height="20" uuid="d28fc741-f2f6-4ac3-8933-1369a8594345"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ADDRESS............................................................................................................................]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="105" y="125" width="100" height="20" uuid="040ea61b-6bec-44b0-9aab-3f82fddb3d2e"/>
+				<textElement>
+					<font fontName="Adobe Caslon Pro" size="14" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TOWN_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="246" y="126" width="100" height="20" uuid="5405ed46-d267-45d0-950a-c7c71969934f"/>
+				<textElement>
+					<font fontName="Adobe Caslon Pro" size="14" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{VILLAGE_1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="152" width="575" height="13" forecolor="#404040" uuid="54614d3f-fc8f-45cb-bbcc-ecad9004cbd9"/>
+				<textElement textAlignment="Center">
+					<font size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[MartMerg Medical Clinic]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="0" width="559" height="20" uuid="e04dc457-968c-46f1-a4b0-377c56c3abaf"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NAME:................................................................................................................................]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="54" y="-5" width="46" height="20" uuid="df723cef-c4c0-4979-b193-16872c50e550"/>
+				<textElement>
+					<font fontName="Adobe Caslon Pro" size="14" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TITLE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="105" y="-6" width="82" height="20" uuid="1c66a6a0-4232-41c5-b7ab-8d452c45326b"/>
+				<textElement>
+					<font fontName="Adobe Caslon Pro" size="14" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FIRST_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="174" y="-6" width="100" height="20" uuid="2fe3f081-a8bd-4735-90f2-1184649a5a6b"/>
+				<textElement>
+					<font fontName="Adobe Caslon Pro" size="14" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LAST_NAME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="121" y="61" width="100" height="20" uuid="8a0ceaf6-901b-4755-8f25-f1fd1e16e914"/>
+				<textElement>
+					<font size="12" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Yrs]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="2" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
