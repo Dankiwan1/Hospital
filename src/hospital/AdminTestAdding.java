@@ -77,8 +77,6 @@ public class AdminTestAdding extends javax.swing.JInternalFrame {
         jButton4 = new javax.swing.JButton();
         jSeparator4 = new javax.swing.JToolBar.Separator();
 
-        setClosable(true);
-
         tb_adminadd.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},

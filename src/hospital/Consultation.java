@@ -118,7 +118,6 @@ public class Consultation extends javax.swing.JInternalFrame {
         jButton7 = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JToolBar.Separator();
 
-        setClosable(true);
         setTitle("CONSULTATION");
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -250,10 +249,7 @@ public class Consultation extends javax.swing.JInternalFrame {
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(txt_bp, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addComponent(txt_bp, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -468,6 +464,7 @@ public class Consultation extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
+        jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add-icon.png"))); // NOI18N

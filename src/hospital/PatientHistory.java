@@ -115,7 +115,6 @@ public class PatientHistory extends javax.swing.JInternalFrame {
         jScrollPane20 = new javax.swing.JScrollPane();
         table_pres_summ = new javax.swing.JTable();
 
-        setClosable(true);
         setTitle("PATIENT HISTORY");
         setToolTipText("");
 

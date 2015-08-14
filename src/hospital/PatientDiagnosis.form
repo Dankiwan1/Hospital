@@ -19,7 +19,6 @@
     </Container>
   </NonVisualComponents>
   <Properties>
-    <Property name="closable" type="boolean" value="true"/>
     <Property name="title" type="java.lang.String" value="PATIENT DIAGNOS FORM"/>
     <Property name="toolTipText" type="java.lang.String" value=""/>
   </Properties>
@@ -578,6 +577,7 @@
     </Container>
     <Container class="javax.swing.JToolBar" name="jToolBar1">
       <Properties>
+        <Property name="floatable" type="boolean" value="false"/>
         <Property name="rollover" type="boolean" value="true"/>
       </Properties>
 

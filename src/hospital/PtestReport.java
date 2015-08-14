@@ -118,8 +118,6 @@ public class PtestReport extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         Testsreport = new javax.swing.JTable();
 
-        setClosable(true);
-
         jPanel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jLabel2.setText("Choose Test Name");

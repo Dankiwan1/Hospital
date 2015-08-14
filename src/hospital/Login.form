@@ -117,7 +117,9 @@
                   <Font name="Nimbus Roman No9 L" size="18" style="1"/>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="0"/>
-                <Property name="text" type="java.lang.String" value="MERTMERG MEDICAL CLINIC"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="h_name" type="code"/>
+                </Property>
               </Properties>
             </Component>
           </SubComponents>
@@ -351,7 +353,9 @@
             <Component class="javax.swing.JLabel" name="jLabel6">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="0"/>
-                <Property name="text" type="java.lang.String" value="Copyright &#xa9; Mertmerg Medical Clinic. Dantech."/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="&quot;Copyright &#xa9; &quot;+h_name+&quot;.&quot;" type="code"/>
+                </Property>
               </Properties>
             </Component>
           </SubComponents>

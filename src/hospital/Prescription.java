@@ -7,6 +7,7 @@ package hospital;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import static java.lang.Thread.sleep;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -125,8 +126,6 @@ public class Prescription extends javax.swing.JInternalFrame {
         jSeparator2 = new javax.swing.JToolBar.Separator();
         jButton7 = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JToolBar.Separator();
-
-        setClosable(true);
 
         jPanel11.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -328,6 +327,7 @@ public class Prescription extends javax.swing.JInternalFrame {
 
         jTabbedPane1.addTab("DIET ADVICE", jPanel3);
 
+        jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add-icon.png"))); // NOI18N
@@ -406,8 +406,8 @@ if(txt_search.getText().equals("")){
         
         
         try {
-//String report="D:\\NetbeansProject\\Hospital\\Reports\\report2.jrxml";
-            JasperDesign jd = JRXmlLoader.load("Reports\\Patient_Summary.jrxml");
+               String basePath = new File("src\\Reports\\Patient_Summary.jrxml").getAbsolutePath();
+            JasperDesign jd = JRXmlLoader.load(basePath);
             String sql = "SELECT\n" +
 "     patient.`PATIENT_ID` AS patient_PATIENT_ID,\n" +
 "     patient.`TITLE` AS patient_TITLE,\n" +

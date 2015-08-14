@@ -68,7 +68,6 @@ public class BloodTest extends javax.swing.JInternalFrame {
         jSeparator1 = new javax.swing.JToolBar.Separator();
         jButton3 = new javax.swing.JButton();
 
-        setClosable(true);
         setTitle("BLOOD TEST");
         setToolTipText("");
 

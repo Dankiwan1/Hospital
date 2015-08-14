@@ -184,6 +184,7 @@ public class Patientrecords extends javax.swing.JInternalFrame {
             e1.printStackTrace();
         }
 
+        jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/today-icon.png"))); // NOI18N

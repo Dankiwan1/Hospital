@@ -74,7 +74,6 @@ public class PatientBill extends javax.swing.JInternalFrame {
         txt_user = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
 
-        setClosable(true);
         setTitle("PATIENT BILL");
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Sold Items"));

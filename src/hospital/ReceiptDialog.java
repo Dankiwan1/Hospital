@@ -6,6 +6,7 @@
 
 package hospital;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -39,8 +40,9 @@ String pid;
     }
 public void receipt(){
                   try {
-//String report="D:\\NetbeansProject\\Hospital\\Reports\\report2.jrxml";
-                        JasperDesign jd = JRXmlLoader.load("Reports\\Receipts.jrxml");
+                         String basePath = new File("src\\Reports\\Receipts.jrxml").getAbsolutePath();
+    
+                   JasperDesign jd = JRXmlLoader.load(basePath);
                         String sql = "SELECT\n" +
 "     patient_billing.`CONSULTATION_FEE` AS patient_billing_CONSULTATION_FEE,\n" +
 "     patient_billing.`MEDICAL_FEE` AS patient_billing_MEDICAL_FEE,\n" +

@@ -6,6 +6,7 @@
 package hospital;
 
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -105,6 +106,7 @@ public class Receipt extends javax.swing.JInternalFrame {
 
         setTitle("RECEIPT");
 
+        jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
         btn_print_receipt.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/printer-icon.png"))); // NOI18N
@@ -209,8 +211,9 @@ public class Receipt extends javax.swing.JInternalFrame {
         int ro = receipt_table.getSelectedRow();
         String id = receipt_table.getValueAt(ro, 0).toString();
         try {
-
-            JasperDesign jd = JRXmlLoader.load("D:\\NetbeansProject\\Hospital\\Reports\\Receipts.jrxml");
+   String basePath = new File("src\\Reports\\Receipts.jrxml").getAbsolutePath();
+    
+            JasperDesign jd = JRXmlLoader.load(basePath);
             String sql = "SELECT\n"
                     + "     patient_billing.`CONSULTATION_FEE` AS patient_billing_CONSULTATION_FEE,\n"
                     + "     patient_billing.`MEDICAL_FEE` AS patient_billing_MEDICAL_FEE,\n"

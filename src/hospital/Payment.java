@@ -150,6 +150,7 @@ public void datenandtime() {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Payment Editor");
 
+        jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
         jButton1.setText("Make Payment");

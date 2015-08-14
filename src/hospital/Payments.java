@@ -91,6 +91,7 @@ public class Payments extends javax.swing.JInternalFrame {
             .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
         );
 
+        jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
         jButton1.setText("New");

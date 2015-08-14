@@ -110,7 +110,7 @@ public class LabReport extends javax.swing.JInternalFrame {
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
     try {
 
-                        JasperDesign jd = JRXmlLoader.load("D:\\NetbeansProject\\Hospital\\Reports\\TestsReport.jrxml");
+                        JasperDesign jd = JRXmlLoader.load("src\\Reports\\TestsReport.jrxml");
                         String sql = "(SELECT\n" +
 "     hospitaltests.`TEST_CODE` AS hospitaltests_TEST_CODE,\n" +
 "     hospitaltests.`TEST_NAME` AS hospitaltests_TEST_NAME,\n" +

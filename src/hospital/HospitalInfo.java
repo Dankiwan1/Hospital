@@ -29,10 +29,13 @@ public class HospitalInfo extends javax.swing.JInternalFrame {
     Connection con = null;
     ResultSet rs = null;
     PreparedStatement pst = null;
-    String bb;
+    String bb,title,adress,locat;
     public int day, month, year;
 
-    public HospitalInfo() {
+    public HospitalInfo(String h_title,String address,String location) {
+        title=h_title;
+        adress=address;
+        locat=location;
         initComponents();
         con = javaconnect.ConnectDb();
         datenandtime();
@@ -118,7 +121,7 @@ public class HospitalInfo extends javax.swing.JInternalFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setForeground(new java.awt.Color(153, 153, 255));
         setResizable(true);
-        setTitle("MERTMERG HOSPITAL");
+        setTitle(title);
         setToolTipText("");
         setAlignmentX(1.5F);
         setAlignmentY(1.5F);
@@ -164,13 +167,13 @@ public class HospitalInfo extends javax.swing.JInternalFrame {
         );
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("MARTMERG MEDICAL CLINIC");
+        jLabel4.setText(title);
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("P.O. BOX 46915");
+        jLabel3.setText(adress);
 
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("KAHAWA SUKARI NAIROBI");
+        jLabel5.setText(locat);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

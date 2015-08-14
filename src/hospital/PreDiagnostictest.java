@@ -96,7 +96,6 @@ if(prediagtestinstance==null){
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
-        setClosable(true);
         setTitle("PRE-DIAGNOS");
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -395,6 +394,7 @@ if(prediagtestinstance==null){
                 .addContainerGap())
         );
 
+        jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Save-icon.png"))); // NOI18N

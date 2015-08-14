@@ -6,6 +6,7 @@
 
 package hospital;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -97,8 +98,10 @@ public class SummaryDialog extends javax.swing.JDialog {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
  
         try {
+            String basePath = new File("src\\Reports\\Patient_Summary.jrxml").getAbsolutePath();
+    
 //String report="D:\\NetbeansProject\\Hospital\\Reports\\report2.jrxml";
-            JasperDesign jd = JRXmlLoader.load("Reports\\Patient_Summary.jrxml");
+            JasperDesign jd = JRXmlLoader.load(basePath);
             String sql = "SELECT\n" +
 "     patient.`PATIENT_ID` AS patient_PATIENT_ID,\n" +
 "     patient.`TITLE` AS patient_TITLE,\n" +

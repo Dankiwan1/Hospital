@@ -5,6 +5,7 @@
  */
 package hospital;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -291,7 +292,9 @@ public class PatientReport extends javax.swing.JInternalFrame {
             rr = jc_patient_category.getSelectedIndex();
             if (rr == 0) {
                 try {
-                    JasperDesign jd = JRXmlLoader.load("Reports\\PatientAddmissionAll.jrxml");
+                       String basePath = new File("src\\Reports\\PatientAddmissionAll.jrxml").getAbsolutePath();
+    
+                    JasperDesign jd = JRXmlLoader.load(basePath);
                     String sql = "SELECT patient.`TITLE`, patient.`FIRST_NAME`, "
                             + "patient.`LAST_NAME`, patient.`GENDER`, patient.`MOBILE_NO`,"
                             + " patient_category.`AGE` AS patient_category_AGE,  "

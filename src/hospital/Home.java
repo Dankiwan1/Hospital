@@ -75,7 +75,7 @@ public class Home extends JRibbonFrame {
     //ImageIcon rpa = new ImageIcon("images/Get-Info-icon.png");
     JPanel centerrpanel, leftpanel, rightpanel;
     JLabel time, date, logdetail, user, hosi;
-    public String me, ufname, ulname;
+    public String me, ufname, ulname,p_title,h_adress,h_location;
     JButton clickbutton;
     JCommandButton Receptionbutton,
             PatientRButton, SearchPButton, DoctorAssignbtn,
@@ -113,9 +113,13 @@ public class Home extends JRibbonFrame {
     public static final String PROPERTY_APPLICATION_ICON = "images/Hospital-icon.png";
 
 //icon image
-    public Home(String loggedin_user) {
+    public Home(String loggedin_user,String h_name,String hosi_address,String hosiloc) {
         super();
+        p_title=h_name;
+        h_adress=hosi_address;
+        h_location=hosiloc;
         con = javaconnect.ConnectDb();
+        
 
         //Screen size
         int inset = 10;
@@ -124,7 +128,7 @@ public class Home extends JRibbonFrame {
                 dime.width - inset * 2,
                 dime.height - inset * 2);
         setVisible(true);
-        setTitle("MARTMERG MEDICAL CLINIC");
+        setTitle(p_title);
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowListener() {
@@ -779,10 +783,11 @@ public class Home extends JRibbonFrame {
         RibbonApplicationMenu bb = new RibbonApplicationMenu();
 
         bb.addMenuSeparator();
-       // bb.addMenuEntry(amEntryPrint);
-        //   bb.addMenuEntry(save);
-        //    bb.addMenuEntry(Open);
-        //   bb.addMenuEntry(Saveas);
+        //comment
+//        bb.addMenuEntry(amEntryPrint);
+//           bb.addMenuEntry(save);
+//            bb.addMenuEntry(Open);
+//           bb.addMenuEntry(Saveas);
         bb.addFooterEntry(otheruser);
         bb.addFooterEntry(footer);
 
@@ -888,7 +893,7 @@ public class Home extends JRibbonFrame {
         desktop.add(rightpanel, BorderLayout.LINE_END);
 
         JPanel left = new JPanel();
-        HospitalInfo hf = new HospitalInfo();
+        HospitalInfo hf = new HospitalInfo(p_title,h_adress,h_location);
         hf.setVisible(true);
         left.add(hf);
         desktop.add(left, BorderLayout.LINE_START);
@@ -905,7 +910,7 @@ public class Home extends JRibbonFrame {
         date.setIcon(getSmallIconFromResource("images/calendar-icon.png"));
     
         foot.add(logdetail,BorderLayout.LINE_START);
-        foot.add(time,BorderLayout.CENTER);
+        //foot.add(time,BorderLayout.CENTER);
      
         foot.add(date,BorderLayout.LINE_END);
 
@@ -1018,7 +1023,7 @@ public class Home extends JRibbonFrame {
         panel.setLayout(new GridLayout(0, 1));
         panel.setBounds(10, 20, 700, 300);
         panel.setBackground(Color.LIGHT_GRAY);
-        Border b1 = BorderFactory.createTitledBorder("MARTMERG MEDICAL CLINIC");
+        Border b1 = BorderFactory.createTitledBorder(p_title);
         Border b2 = BorderFactory.createLineBorder(Color.BLUE, 2);
         panel.setBorder(BorderFactory.createCompoundBorder(b2, b1));
         // hosii = new ImageIcon("/images/Hospital-icon .png");
@@ -1584,21 +1589,15 @@ public class Home extends JRibbonFrame {
 
     public void LabPresc() {
         centerpanel.removeTabAt(1);
-        LabPres labp = new LabPres().LabPresInstance();
-        if (labp.isVisible()) {
-            try {
-                labp.setSelected(true);
-            } catch (Exception e) {
-
-            }
-        } else {
+        LabPres labp = new LabPres();
+//        
 
             labp.setVisible(true);
 
             JScrollPane sscrolPane = new JScrollPane(labp);
             centerpanel.addTab("LAB PRESCRIPTION", null, sscrolPane, null);
             centerpanel.setSelectedComponent(sscrolPane);
-        }
+        
     }
 
     public void pfollowup() {

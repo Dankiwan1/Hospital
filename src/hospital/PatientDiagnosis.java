@@ -103,7 +103,6 @@ public class PatientDiagnosis extends javax.swing.JInternalFrame {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
-        setClosable(true);
         setTitle("PATIENT DIAGNOS FORM");
         setToolTipText("");
 
@@ -404,6 +403,7 @@ public class PatientDiagnosis extends javax.swing.JInternalFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Save-icon.png"))); // NOI18N

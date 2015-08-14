@@ -6,6 +6,7 @@
 
 package hospital;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -117,8 +118,9 @@ public class DrugListReport extends javax.swing.JInternalFrame {
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
  try {
-
-                        JasperDesign jd = JRXmlLoader.load("Reports\\DrugListrepo.jrxml");
+   String basePath = new File("src\\Reports\\DrugListrepo.jrxml").getAbsolutePath();
+    
+                        JasperDesign jd = JRXmlLoader.load(basePath);
                         String sql = "SELECT\n" +
 "     hospitalmedicine.`MEDICINE_CODE` AS hospitalmedicine_MEDICINE_CODE,\n" +
 "     hospitalmedicine.`MEDICINE_INITIALS` AS hospitalmedicine_MEDICINE_INITIALS,\n" +

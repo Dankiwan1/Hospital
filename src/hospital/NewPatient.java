@@ -6,11 +6,14 @@
  */
 package hospital;
 
+import com.github.sarxos.webcam.Webcam;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import static java.lang.Thread.sleep;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,11 +25,13 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -144,7 +149,6 @@ public class NewPatient extends javax.swing.JInternalFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("NEW PATIENT");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add-contact-icon.png"))); // NOI18N
-        setOpaque(true);
 
         jLabel1.setText("Patient ID:");
 
@@ -458,7 +462,7 @@ public class NewPatient extends javax.swing.JInternalFrame {
                         .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(jPanel14Layout.createSequentialGroup()
                                 .addComponent(jLabel17)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
                                 .addComponent(txt_firstname, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jc_title, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel14Layout.createSequentialGroup()
@@ -466,15 +470,11 @@ public class NewPatient extends javax.swing.JInternalFrame {
                                     .addComponent(jLabel18)
                                     .addComponent(jLabel19)
                                     .addComponent(jLabel21))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel14Layout.createSequentialGroup()
-                                        .addGap(29, 29, 29)
-                                        .addComponent(jC_gender, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(txt_lastname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txt_age, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                    .addComponent(txt_lastname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txt_age, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jC_gender, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel14Layout.createSequentialGroup()
                                 .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel23)
@@ -491,7 +491,7 @@ public class NewPatient extends javax.swing.JInternalFrame {
                     .addComponent(jPanel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(85, Short.MAX_VALUE))
+                .addContainerGap(75, Short.MAX_VALUE))
         );
         jPanel14Layout.setVerticalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -510,10 +510,10 @@ public class NewPatient extends javax.swing.JInternalFrame {
                             .addComponent(jLabel18)
                             .addComponent(txt_lastname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel19)
                             .addComponent(jC_gender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(9, 9, 9)
                         .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel21)
                             .addComponent(txt_age, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -593,6 +593,7 @@ public class NewPatient extends javax.swing.JInternalFrame {
 
         jTabbedPane4.addTab("Patient Details", jPanel13);
 
+        jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
         NewPatientsvbtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Save-icon.png"))); // NOI18N
@@ -643,8 +644,14 @@ public class NewPatient extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-//        uploadphoto();
-        // TODO add your handling code here:
+//     Webcam buildin = Webcam.getWebcams().get(0); // build-in laptop camera
+//Webcam usb = Webcam.getWebcams().get(1); // usb camera
+//BufferedImage image1 = buildin.getImage();
+//BufferedImage image2 = usb.getImage();
+       
+              uploadphoto();
+            // TODO add your handling code here:
+       
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void txt_mobilenoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_mobilenoActionPerformed
@@ -939,10 +946,10 @@ public class NewPatient extends javax.swing.JInternalFrame {
                 int ncout = Integer.parseInt(count);
                 int m = ++ncout;
                 ID = m;
-                txt_patientid.setText("M.M.C / " + m + " / 2014");
+                txt_patientid.setText("M.M.C / " + m + " / 2015");
 
             } else {
-                txt_patientid.setText("M.M.C / 1 / 2014");
+                txt_patientid.setText("M.M.C / 1 / 2015");
                 ID = 1;
             }
 
@@ -957,7 +964,8 @@ public class NewPatient extends javax.swing.JInternalFrame {
         File f = photoupload.getSelectedFile();
         filename = f.getAbsolutePath();
         photoformat = new ImageIcon(filename);
-        lbphoto.setIcon(photoformat);
+        lbphoto=new JLabel(filename);
+       // lbphoto.setIcon(photoformat);
 
     }
 
@@ -974,12 +982,9 @@ public class NewPatient extends javax.swing.JInternalFrame {
                 public void actionPerformed(ActionEvent ae) {
                     dispose();
                     try {
-//String report="D:\\NetbeansProject\\Hospital\\Reports\\report2.jrxml";
-                       // JasperDesign jd = JRXmlLoader.load("Reports\\report2.jrxml");
+ String basePath = new File("src\\Reports\\report2.jrxml").getAbsolutePath();
                        
-                                  JasperDesign jd = JRXmlLoader.load("Reports\\report2.jrxml");
-                               //   "c://Program Files (x86)//PAS//PAS Help.chm"
-                              //    D:\NetbeansProject\Hospital\src\Reports\report2.jrxml
+                                  JasperDesign jd = JRXmlLoader.load(basePath);
              String sql = "(SELECT patient.TITLE,patient.FIRST_NAME,patient.LAST_NAME,patient.PATIENT_ID,patient.GENDER,patient.REGISTRATION_DATE,patient_category.AGE,patient_category.TOWN,patient_category.VILLAGE FROM patient,patient_category WHERE patient.PATIENT_ID=" + (ID - 1) + " and (patient.PATIENT_ID=patient_category.PATIENT_ID))";
                         JRDesignQuery newQuery = new JRDesignQuery();
                         newQuery.setText(sql);

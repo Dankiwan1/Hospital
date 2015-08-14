@@ -7,6 +7,7 @@ package hospital;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import static java.lang.Thread.sleep;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -125,10 +126,10 @@ public class SearchPatient extends javax.swing.JInternalFrame {
 
         jLabel2.setText("jLabel2");
 
-        setClosable(true);
         setTitle("PATIENT SEARCH");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/images/users-search-icon.png"))); // NOI18N
 
+        jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
         jToolBar1.add(jSeparator4);
 
@@ -553,10 +554,8 @@ public class SearchPatient extends javax.swing.JInternalFrame {
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         try {
             String ppid = txt_search.getText();
-//String report="D:\\NetbeansProject\\Hospital\\Reports\\report2.jrxml";
-            String report="D:\\NetbeansProject\\Hospital\\Reports\\report2.jrxml";
-          
-            JasperDesign jd = JRXmlLoader.load(report);
+            String basePath = new File("src\\Reports\\report2.jrxml").getAbsolutePath();
+            JasperDesign jd = JRXmlLoader.load(basePath);
             String sql = "(SELECT patient.TITLE,patient.FIRST_NAME,patient.LAST_NAME,patient.PATIENT_ID,patient.GENDER,patient.REGISTRATION_DATE,patient_category.AGE,patient_category.TOWN,patient_category.VILLAGE FROM patient,patient_category WHERE patient.PATIENT_ID='" + ppid + "' and (patient.PATIENT_ID=patient_category.PATIENT_ID))";
             JRDesignQuery newQuery = new JRDesignQuery();
             newQuery.setText(sql);

@@ -22,21 +22,22 @@ import javax.swing.JOptionPane;
  * @author dankiwan
  */
 public class Login extends javax.swing.JFrame {
-
+    
     Connection con = null;
     ResultSet rs = null;
     PreparedStatement pst = null;
-    //public Home hoomie;
-    String loggedin_user;
+    public String loggedin_user, h_name, h_address, h_location, h_email, h_tel, h_website;
     int month, day, year, second, minute, hour;
-     int id;
+    int id;
 
     /**
      * Creates new form Login
      */
     public Login() {
-        initComponents();
         con = javaconnect.ConnectDb();
+        hosidetailstable();
+        hosidetails();
+        initComponents();
         datenandtime();
     }
     //method to exit the system
@@ -44,7 +45,7 @@ public class Login extends javax.swing.JFrame {
     public void close() {
         System.exit(0);
     }
-
+    
     public void datenandtime() {
         Thread clock = new Thread() {
             public void run() {
@@ -61,7 +62,7 @@ public class Login extends javax.swing.JFrame {
                     minute = cal.get(Calendar.MINUTE);
                     hour = cal.get(Calendar.HOUR);
                     SimpleDateFormat time_format = new SimpleDateFormat("HH:mm:ss");
-
+                    
                     time.setText(time_format.format(cal.getTime()));
 
                     //   time.setText(hour + ":" + (minute) + ":" + second);
@@ -74,21 +75,63 @@ public class Login extends javax.swing.JFrame {
         };
         clock.start();
     }
-//Combo filling query..
+//check for hospital details from db
 
+    public void hosidetailstable() {
+        String details = "select count(*) from hospital_details";
+        try {
+            
+            pst = con.prepareStatement(details);
+            rs = pst.executeQuery();
+            rs.next();
+            int rowcount = rs.getInt(1);            
+            if (rowcount < 1) {
+                HospitalDetails hd = new HospitalDetails(this, rootPaneCheckingEnabled);
+                hd.setVisible(true);
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+            // Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+    }
+
+    //loading hospital details from db
+
+    public void hosidetails() {
+        String details = "select * from hospital_details";
+        try {
+            
+            pst = con.prepareStatement(details);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                h_name = rs.getString("HospitalName");
+                h_address = rs.getString("Address");
+                h_location = rs.getString("Location");
+                h_email = rs.getString("Email");
+                h_tel = rs.getString("Telephone");
+                h_website = rs.getString("Website");
+            }
+            
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+            // Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+    }
+    
     public void loggin() {
-        // name();
-
+        
         String sql = "select * from user where username=? and password=?";
         try {
             pst = con.prepareStatement(sql);
             pst.setString(1, txt_username.getText());
             pst.setString(2, txt_password.getText());
             rs = pst.executeQuery();
-
+            
             if (rs.next()) {
                 loggedin_user = rs.getString("USER_ID");
-               id = Integer.parseInt(loggedin_user);
+                id = Integer.parseInt(loggedin_user);
                 String sqql = "Update user set Status='yes' where  password='" + txt_password.getText() + "' and username='" + txt_username.getText() + "'";
                 Statement stm = con.createStatement();
                 stm.executeUpdate(sqql);
@@ -98,8 +141,8 @@ public class Login extends javax.swing.JFrame {
                 String log = "insert into user_log (USER_ID,Status,login_time)values('" + loggedin_user + "','" + status + "','" + datetime + "')";
                 Statement stmm = con.createStatement();
                 stmm.executeUpdate(log);
-                 this.dispose();
-                Home h=new Home(loggedin_user);
+                this.dispose();
+                Home h = new Home(loggedin_user,h_name,h_address,h_location);
                 h.setVisible(true);
             } else {
                 error_txt.setText("<html><font color=red><i>Please verify your login credentials...<br><hr></i></font></html>");
@@ -107,13 +150,9 @@ public class Login extends javax.swing.JFrame {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, e);
         }
-
+        
     }
 
-    // public  String name(){
-    //   String name=JOptionPane.showInputDialog(null, "Enter the name of the hospital");
-    //   return name.toUpperCase();
-    //  }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -153,7 +192,7 @@ public class Login extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Nimbus Roman No9 L", 1, 18)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("MERTMERG MEDICAL CLINIC");
+        jLabel1.setText(h_name);
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -312,7 +351,7 @@ public class Login extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(114, 145, 160));
 
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setText("Copyright © Mertmerg Medical Clinic. Dantech.");
+        jLabel6.setText("Copyright © "+h_name+".");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -380,7 +419,7 @@ public class Login extends javax.swing.JFrame {
 
         // TODO add your handling code here
         loggin();
-
+        
 
     }//GEN-LAST:event_cmd_loginActionPerformed
 

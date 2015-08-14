@@ -13,7 +13,6 @@
     </Component>
   </NonVisualComponents>
   <Properties>
-    <Property name="closable" type="boolean" value="true"/>
     <Property name="title" type="java.lang.String" value="PATIENT SEARCH"/>
     <Property name="frameIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
       <Image iconType="3" name="/images/users-search-icon.png"/>
@@ -71,6 +70,7 @@
   <SubComponents>
     <Container class="javax.swing.JToolBar" name="jToolBar1">
       <Properties>
+        <Property name="floatable" type="boolean" value="false"/>
         <Property name="rollover" type="boolean" value="true"/>
       </Properties>
 

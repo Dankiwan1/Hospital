@@ -54,7 +54,6 @@ int month,day,year;
         jScrollPane5 = new javax.swing.JScrollPane();
         txt_inje_desc = new javax.swing.JTextPane();
 
-        setClosable(true);
         setTitle("PATIENT FOLLOW UP");
 
         jPanel6.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));

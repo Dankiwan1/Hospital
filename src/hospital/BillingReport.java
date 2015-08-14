@@ -42,7 +42,6 @@ public class BillingReport extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
-        setClosable(true);
         setTitle("BILLING REPORTS");
 
         jToolBar1.setRollover(true);
